@@ -14,13 +14,13 @@ urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
     #   generic user urls
     # ------------------------------------------------------------------------------------------------------------------
-    path('users/', views.user_list),
-    path('users/<int:pk>/', views.user_detail),
+    path('users/', views.UserList.as_view()),
+    path('users/<int:pk>/', views.UserDetail.as_view()),
     # ------------------------------------------------------------------------------------------------------------------
     #   profile urls
     # ------------------------------------------------------------------------------------------------------------------
-    path('profiles/', views.profile_list),
-    path('profiles/<int:pk>/', views.profile_detail),
+    path('profiles/', views.ProfileList.as_view()),
+    path('profiles/<int:pk>/', views.ProfileDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

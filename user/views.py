@@ -3,10 +3,11 @@ from rest_framework import viewsets, status
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Profile
 from .serializers import UserSerializer, ProfileSerializer
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 
@@ -37,54 +38,54 @@ class ProfileViewSet(viewsets.ModelViewSet):
 #   -   user_detail:
 #       - if GET:   show user detail
 #       - if PUT:   update user detail
+#       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
 
-@csrf_exempt
-@api_view(['GET', 'POST'])
-def user_list(request, format=None):
+
+class UserList(APIView):
     """
     List all users, or create a new user.
     """
-    if request.method == 'GET':
+    def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(data=data)
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def user_detail(request, pk, format=None):
+class UserDetail(APIView):
     """
     Retrieve, update or delete a user.
     """
-    # check if user exists
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return HttpResponse(status=404)
-    # if get return user instance
-    if request.method == 'GET':
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk)
         serializer = UserSerializer(user)
-        return JsonResponse(serializer.data)
-    # if put update user instance
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(user, data=data)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        user = self.get_object(pk)
+        serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-    # if delete delete user instance
-    elif request.method == 'DELETE':
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        user = self.get_object(pk)
         user.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -92,55 +93,53 @@ def user_detail(request, pk, format=None):
 #   -   profile_list
 #       - if GET:   list all profile object
 #       - if POST:  add new profile
-#   -   user_detail:
+#   -   profile_detail:
 #       - if GET:   show profile detail
 #       - if PUT:   update profile detail
+#       - if DELETE: delete profile
 # ----------------------------------------------------------------------------------------------------------------------
 
-@csrf_exempt
-@api_view(['GET', 'POST'])
-def profile_list(request, format=None):
+class ProfileList(APIView):
     """
-    List all profiles, or create a new user.
+    List all profiles, or create a new profile.
     """
-    if request.method == 'GET':
+    def get(self, request, format=None):
         profiles = Profile.objects.all()
         serializer = ProfileSerializer(profiles, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ProfileSerializer(data=data)
+    def post(self, request, format=None):
+        serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-@api_view(['GET', 'PUT', 'DELETE'])
-def profile_detail(request, pk, format=None):
+class ProfileDetail(APIView):
     """
     Retrieve, update or delete a profile.
     """
-    # check if profile exists
-    try:
-        profile = Profile.objects.get(pk=pk)
-    except Profile.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    # if get return profile instance
-    if request.method == 'GET':
+    def get_object(self, pk):
+        try:
+            return Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        profile = self.get_object(pk)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
-    # if put update profali instance
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProfileSerializer(profile, data=data)
+
+    def put(self, request, pk, format=None):
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    # if delete delete profile instance
-    elif request.method == 'DELETE':
+
+    def delete(self, request, pk, format=None):
+        profile = self.get_object(pk)
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
