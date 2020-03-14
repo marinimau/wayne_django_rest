@@ -32,8 +32,6 @@ class Profile(models.Model):
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     cellular = models.TextField(null=True, max_length=40, blank=True)
-    name = models.TextField(null=False, max_length=50, blank=True)
-    surname = models.TextField(null=False, max_length=50, blank=True)
     gender = models.CharField(null=False, max_length=1, choices=Gender.choices, default=Gender.UNSPECIFIED)
     country = models.CharField(null=False, max_length=2, choices=Country.choices, default=Country.IT)
     language = models.CharField(null=False, max_length=2, choices=Language.choices, default=Language.EN)

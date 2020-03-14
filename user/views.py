@@ -125,12 +125,12 @@ def profile_detail(request, pk):
         return HttpResponse(status=404)
     # if get return profile instance
     if request.method == 'GET':
-        serializer = UserSerializer(profile)
+        serializer = ProfileSerializer(profile)
         return JsonResponse(serializer.data)
     # if put update profali instance
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = UserSerializer(profile, data=data)
+        serializer = ProfileSerializer(profile, data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
