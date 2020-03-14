@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -40,8 +40,17 @@ class ProfileViewSet(viewsets.ModelViewSet):
 #       - if PUT:   update user detail
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+'''
 class UserList(APIView):
     """
     List all users, or create a new user.
@@ -86,7 +95,7 @@ class UserDetail(APIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
+'''
 
 # ----------------------------------------------------------------------------------------------------------------------
 #   User Profile views
@@ -99,6 +108,18 @@ class UserDetail(APIView):
 #       - if DELETE: delete profile
 # ----------------------------------------------------------------------------------------------------------------------
 
+
+class ProfileList(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+'''
 class ProfileList(APIView):
     """
     List all profiles, or create a new profile.
@@ -142,4 +163,5 @@ class ProfileDetail(APIView):
     def delete(self, request, pk, format=None):
         profile = self.get_object(pk)
         profile.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+    '''
