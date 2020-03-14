@@ -41,7 +41,9 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
-        return Profile.objects.create(**validated_data)
+        user_data = validated_data.pop('user')
+        user = User.objects.create(**user_data)
+        return Profile.objects.create(user=user, **validated_data)
 
     user = UserSerializer()
     bio = serializers.CharField(max_length=500)
