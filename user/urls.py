@@ -1,15 +1,7 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-
 from . import views
 
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'profiles', views.ProfileViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
     #   generic user urls

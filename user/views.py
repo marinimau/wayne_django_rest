@@ -1,33 +1,9 @@
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, status, generics
-from rest_framework import permissions
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
+from rest_framework import generics
 from .models import Profile
+from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
 from .serializers import UserSerializer, ProfileSerializer
-from django.http import HttpResponse, JsonResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class ProfileViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+from rest_framework import permissions
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -40,14 +16,44 @@ class ProfileViewSet(viewsets.ModelViewSet):
 #       - if PUT:   update user detail
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
+
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [UserListPermissions]
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, UserEditPermissions]
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#   User Profile views
+#   -   profile_list
+#       - if GET:   list all profile object
+#       - if POST:  add new profile
+#   -   profile_detail:
+#       - if GET:   show profile detail
+#       - if PUT:   update profile detail
+#       - if DELETE: delete profile
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+class ProfileList(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [ProfileListPermissions]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ProfileEditPermissions]
 
 
 '''
@@ -95,31 +101,8 @@ class UserDetail(APIView):
         user = self.get_object(pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-'''
-
-# ----------------------------------------------------------------------------------------------------------------------
-#   User Profile views
-#   -   profile_list
-#       - if GET:   list all profile object
-#       - if POST:  add new profile
-#   -   profile_detail:
-#       - if GET:   show profile detail
-#       - if PUT:   update profile detail
-#       - if DELETE: delete profile
-# ----------------------------------------------------------------------------------------------------------------------
 
 
-class ProfileList(generics.ListCreateAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-
-
-class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-
-
-'''
 class ProfileList(APIView):
     """
     List all profiles, or create a new profile.

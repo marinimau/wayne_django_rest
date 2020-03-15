@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from user.models import Profile
@@ -12,18 +13,30 @@ class UserSerializer(serializers.Serializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.date_joined = validated_data.get('date_joined', instance.date_joined)
-        instance.save()
         return instance
 
     def create(self, validated_data):
-        return User.objects.create(**validated_data)
+        date_joined = timezone.now()
+        username = validated_data.pop('username')
+        password = validated_data.pop('password')
+        password2 = validated_data.pop('password2')
+        if password == password2:
+            user_created = User.objects.create(username=username.lower(), is_active=False, date_joined=date_joined, **validated_data)
+            user_created.set_password(password)
+            user_created.save()
+            return user_created
+        else:
+            error = {'message': 'password mismatch'}
+            raise serializers.ValidationError(error)
 
     email = serializers.EmailField()
     username = serializers.CharField(max_length=30)
-    is_active = serializers.BooleanField()
+    is_active = serializers.BooleanField(read_only=True)
     first_name = serializers.CharField(max_length=30)
     last_name = serializers.CharField(max_length=30)
-    date_joined = serializers.DateTimeField()
+    date_joined = serializers.DateTimeField(read_only=True)
+    password = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True)
+    password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True)
 
 
 class ProfileSerializer(serializers.Serializer):
@@ -41,11 +54,10 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        user = User.objects.create(**user_data)
-        return Profile.objects.create(user=user, **validated_data)
+        return Profile.objects.create(email_confirmed=False, **validated_data)
 
-    user = UserSerializer()
+    # user = UserSerializer()
+    user = serializers.ReadOnlyField(source='user.pk')
     bio = serializers.CharField(max_length=500)
     location = serializers.CharField(max_length=200)
     cellular = serializers.CharField(max_length=50)
