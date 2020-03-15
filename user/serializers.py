@@ -13,6 +13,7 @@ class UserSerializer(serializers.Serializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.date_joined = validated_data.get('date_joined', instance.date_joined)
+        instance.save()
         return instance
 
     def create(self, validated_data):
@@ -22,6 +23,7 @@ class UserSerializer(serializers.Serializer):
         password2 = validated_data.pop('password2')
         if password == password2:
             user_created = User.objects.create(username=username.lower(), is_active=False, date_joined=date_joined, **validated_data)
+            Profile.objects.create(user=user_created)
             user_created.set_password(password)
             user_created.save()
             return user_created
@@ -58,12 +60,13 @@ class ProfileSerializer(serializers.Serializer):
 
     # user = UserSerializer()
     user = serializers.ReadOnlyField(source='user.pk')
-    bio = serializers.CharField(max_length=500)
-    location = serializers.CharField(max_length=200)
-    cellular = serializers.CharField(max_length=50)
-    gender = serializers.CharField(max_length=1)
-    country = serializers.CharField(max_length=2)
-    language = serializers.CharField(max_length=2)
-    ui_pref = serializers.CharField()
-    birth_date = serializers.CharField()
-    email_confirmed = serializers.BooleanField()
+    bio = serializers.CharField(max_length=500, allow_blank=True, required=False)
+    location = serializers.CharField(max_length=200, allow_blank=True, required=False)
+    cellular = serializers.CharField(max_length=50, allow_blank=True, required=False)
+    gender = serializers.CharField(max_length=1, allow_blank=True, required=False)
+    country = serializers.CharField(max_length=2, allow_blank=True, required=False)
+    language = serializers.CharField(max_length=2, allow_blank=True, required=False)
+    ui_pref = serializers.CharField(allow_blank=True, required=False)
+    birth_date = serializers.CharField(allow_blank=True, required=False)
+    email_confirmed = serializers.BooleanField(required=False)
+
