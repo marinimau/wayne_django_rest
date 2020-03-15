@@ -13,6 +13,11 @@ class UserSerializer(serializers.Serializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.date_joined = validated_data.get('date_joined', instance.date_joined)
+        # alter password
+        password = validated_data.get('password', None)
+        password2 = validated_data.get('password2', None)
+        if password is not None and password == password2:
+            instance.set_password(raw_password=password)
         instance.save()
         return instance
 
@@ -23,7 +28,7 @@ class UserSerializer(serializers.Serializer):
         password2 = validated_data.pop('password2')
         if password == password2:
             user_created = User.objects.create(username=username.lower(), is_active=False, date_joined=date_joined, **validated_data)
-            Profile.objects.create(user=user_created)
+            Profile.objects.create(user=user_created, email_confirmed=False)
             user_created.set_password(password)
             user_created.save()
             return user_created
@@ -31,14 +36,14 @@ class UserSerializer(serializers.Serializer):
             error = {'message': 'password mismatch'}
             raise serializers.ValidationError(error)
 
-    email = serializers.EmailField()
-    username = serializers.CharField(max_length=30)
-    is_active = serializers.BooleanField(read_only=True)
-    first_name = serializers.CharField(max_length=30)
-    last_name = serializers.CharField(max_length=30)
-    date_joined = serializers.DateTimeField(read_only=True)
-    password = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True)
-    password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True)
+    email = serializers.EmailField(required=False)
+    username = serializers.CharField(max_length=30, required=False)
+    is_active = serializers.BooleanField(read_only=True, required=False)
+    first_name = serializers.CharField(max_length=30, required=False)
+    last_name = serializers.CharField(max_length=30, required=False)
+    date_joined = serializers.DateTimeField(read_only=True, required=False)
+    password = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)
+    password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)
 
 
 class ProfileSerializer(serializers.Serializer):
