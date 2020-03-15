@@ -13,6 +13,10 @@ urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
     path('profiles/', views.ProfileList.as_view()),
     path('profiles/<int:pk>/', views.ProfileDetail.as_view()),
+    # ------------------------------------------------------------------------------------------------------------------
+    #   profile urls
+    # ------------------------------------------------------------------------------------------------------------------
+    path('activate/<uidb64>/<token>/', views.ActivateAccount.as_view(), name='activate'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

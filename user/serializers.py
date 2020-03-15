@@ -2,17 +2,23 @@ from django.utils import timezone
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from user.models import Profile
+from user.utils import send_confirm_registration_email
 
 
 class UserSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
-        instance.username = validated_data.get('username', instance.username)
+        # username
+        username = validated_data.get('username', instance.username)
+        instance.username = username.lower()
+        # name and surname
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.is_active = validated_data.get('is_active', instance.is_active)
-        instance.date_joined = validated_data.get('date_joined', instance.date_joined)
+        # deactivate account - one way
+        is_active = validated_data.get('is_active', instance.is_active)
+        if is_active is False and is_active != instance.is_active:
+            instance.is_active = is_active
         # alter password
         password = validated_data.get('password', None)
         password2 = validated_data.get('password2', None)
@@ -31,6 +37,8 @@ class UserSerializer(serializers.Serializer):
             Profile.objects.create(user=user_created, email_confirmed=False)
             user_created.set_password(password)
             user_created.save()
+            # send email
+            send_confirm_registration_email(user_created)
             return user_created
         else:
             error = {'message': 'password mismatch'}
@@ -61,6 +69,7 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
+        validated_data.pop('email_confirmed')
         return Profile.objects.create(email_confirmed=False, **validated_data)
 
     # user = UserSerializer()
@@ -74,4 +83,6 @@ class ProfileSerializer(serializers.Serializer):
     ui_pref = serializers.CharField(allow_blank=True, required=False)
     birth_date = serializers.CharField(allow_blank=True, required=False)
     email_confirmed = serializers.BooleanField(required=False)
+
+
 

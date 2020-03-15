@@ -1,5 +1,11 @@
 from django.contrib.auth.models import User, Group
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from django.views import View
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.status import HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST
+
 from .models import Profile
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
 from .serializers import UserSerializer, ProfileSerializer
@@ -16,6 +22,8 @@ from rest_framework import permissions
 #       - if PUT:   update user detail
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
+from .tokens import account_activation_token
+
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -27,7 +35,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, UserEditPermissions]
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 #   User Profile views
@@ -55,96 +62,29 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, ProfileEditPermissions]
 
-
-'''
-class UserList(APIView):
-    """
-    List all users, or create a new user.
-    """
-    def get(self, request, format=None):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   Account activation
+#
+# ----------------------------------------------------------------------------------------------------------------------
 
 
-class UserDetail(APIView):
-    """
-    Retrieve, update or delete a user.
-    """
-    def get_object(self, pk):
+class ActivateAccount(View):
+
+    def get(self, request, uidb64, token, *args, **kwargs):
         try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        user = self.get_object(pk)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ProfileList(APIView):
-    """
-    List all profiles, or create a new profile.
-    """
-    def get(self, request, format=None):
-        profiles = Profile.objects.all()
-        serializer = ProfileSerializer(profiles, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    def post(self, request, format=None):
-        serializer = ProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProfileDetail(APIView):
-    """
-    Retrieve, update or delete a profile.
-    """
-    def get_object(self, pk):
-        try:
-            return Profile.objects.get(pk=pk)
-        except Profile.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        profile = self.get_object(pk)
-        serializer = ProfileSerializer(profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        profile = self.get_object(pk)
-        profile.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT) 
-    '''
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            profile = Profile.objects.get(user=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+            profile = None
+        if user is not None and profile is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            profile.email_confirmed = True
+            user.save()
+            success = {'message': 'account activated'}
+            return Response(success, status=HTTP_202_ACCEPTED, template_name=None, headers=None, content_type=None)
+        else:
+            error = {'message': 'password mismatch'}
+            raise Response(error, status=HTTP_400_BAD_REQUEST, template_name=None, headers=None, content_type=None)
