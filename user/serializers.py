@@ -44,6 +44,7 @@ class UserSerializer(serializers.Serializer):
             error = {'message': 'password mismatch'}
             raise serializers.ValidationError(error)
 
+    id = serializers.CharField(read_only=True)
     email = serializers.EmailField(required=False)
     username = serializers.CharField(max_length=30, required=False)
     is_active = serializers.BooleanField(read_only=True, required=False)
