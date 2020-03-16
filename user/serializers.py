@@ -22,16 +22,19 @@ from user.utils import send_confirm_registration_email
 # ----------------------------------------------------------------------------------------------------------------------
 
 def check_password_strength(password):
-    return True
+    return re.search("^(?=.*[A-Z])(?=.*[!@#$&*.-_])(?=.*[0-9])(?=.*[a-z]).{8,40}$", password)
 
 
 def update_password(instance, validated_data):
     # alter password
-    password = validated_data.get('password', None)
-    password2 = validated_data.get('password2', None)
-    if password is not None and password == password2 and check_password_strength(password):
-        instance.set_password(raw_password=password)
-    return
+    password = validated_data.get('password', instance.password)
+    password2 = validated_data.get('password2', instance.password)
+    if password != instance.password:
+        result, msg = check_password(password, password2)
+        if result:
+            instance.set_password(raw_password=password)
+        else:
+            raise serializers.ValidationError(msg)
 
 
 def deactivate_account(instance, validated_data):
