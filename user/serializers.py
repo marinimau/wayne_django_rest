@@ -239,7 +239,6 @@ def validate_birth_date(instance, validated_data):
         try:
             date_clean = datetime.strptime(birth_date, '%Y-%m-%d')
         except serializers.ValidationError:
-            date_clean = None
             error = {'message': 'invalid date format in birth_date'}
             raise serializers.ValidationError(error)
         # if format is valid
@@ -299,4 +298,4 @@ class ProfileSerializer(serializers.Serializer):
     language = serializers.CharField(max_length=2, allow_blank=True, required=False)
     ui_pref = serializers.CharField(allow_blank=True, required=False)
     birth_date = serializers.CharField(allow_blank=True, required=False)
-    email_confirmed = serializers.BooleanField(required=False)
+    email_confirmed = serializers.BooleanField(required=False, read_only=True)

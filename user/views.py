@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
@@ -71,7 +71,8 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ActivateAccount(View):
 
-    def get(self, request, uidb64, token, *args, **kwargs):
+    @staticmethod
+    def get(request, uidb64, token, *args, **kwargs):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
@@ -84,7 +85,7 @@ class ActivateAccount(View):
             profile.email_confirmed = True
             user.save()
             success = {'message': 'account activated'}
-            return Response(success, status=HTTP_202_ACCEPTED, template_name=None, headers=None, content_type=None)
+            return Response(success, status=HTTP_202_ACCEPTED)
         else:
             error = {'message': 'password mismatch'}
-            raise Response(error, status=HTTP_400_BAD_REQUEST, template_name=None, headers=None, content_type=None)
+            raise Response(error, status=HTTP_400_BAD_REQUEST)
