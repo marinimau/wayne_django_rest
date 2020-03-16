@@ -181,6 +181,18 @@ def validate_cellular(instance, validated_data):
             raise serializers.ValidationError(error)
 
 
+def validate_location(instance, validated_data):
+    location = validated_data.get('location', instance.location)
+    if location != instance.location:
+        # if the request edit cellular field
+        if len(location) <= 20:
+            instance.location = location
+            return
+        else:
+            error = {'message': 'invalid location'}
+            raise serializers.ValidationError(error)
+
+
 def validate_gender(instance, validated_data):
     gender = validated_data.get('gender', instance.gender).upper()
     if gender != instance.gender:
@@ -253,7 +265,8 @@ class ProfileSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         # validate bio
         validate_bio(instance, validated_data)
-        instance.location = validated_data.get('location', instance.location)
+        # validate location
+        validate_location(instance, validated_data)
         # validate cellular
         validate_cellular(instance, validated_data)
         # validate gender
