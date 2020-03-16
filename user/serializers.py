@@ -4,8 +4,9 @@ import re
 from django.utils import timezone
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from user.models import Profile
-from user.utils import send_confirm_registration_email
+from user.models import Profile, ResetPasswordToken
+from user.tokens import password_reset_token
+from user.utils import send_confirm_registration_email, send_reset_password_email
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -242,7 +243,7 @@ def validate_birth_date(instance, validated_data):
             error = {'message': 'invalid date format in birth_date'}
             raise serializers.ValidationError(error)
         # if format is valid
-        if date_clean is not None and (datetime.now() - date_clean).days/365 >= 16:
+        if date_clean is not None and (datetime.now() - date_clean).days / 365 >= 16:
             instance.birth_date = birth_date
             return
         else:
@@ -299,3 +300,47 @@ class ProfileSerializer(serializers.Serializer):
     ui_pref = serializers.CharField(allow_blank=True, required=False)
     birth_date = serializers.CharField(allow_blank=True, required=False)
     email_confirmed = serializers.BooleanField(required=False, read_only=True)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   Reset password token serializer
+#
+# ----------------------------------------------------------------------------------------------------------------------
+def check_if_already_exists_and_delete_token(user):
+    ResetPasswordToken.objects.filter(user=user).delete()
+    return
+
+
+class ResetPasswordTokenSerializer(serializers.Serializer):
+
+    def update(self, instance, validated_data):
+        error = {'message': 'no update request for this model'}
+        raise serializers.ValidationError(error)
+
+    def create(self, validated_data):
+        email = validated_data.get('email', None)
+        if check_if_exist_email(email):
+            user = User.objects.get(email=email)
+            check_if_already_exists_and_delete_token(user)
+            token = password_reset_token.make_token(user)
+            ip = validated_data.get('ip', None)
+            user_agent = validated_data.get('user_agent', None)
+            creation_timestamp = timezone.now()
+            token_created = ResetPasswordToken.objects.create(user=user, email=email, token=token, ip=ip,
+                                                              user_agent=user_agent,
+                                                              creation_timestamp=creation_timestamp)
+            token_created.save()
+            # send email
+            send_reset_password_email(user, ip, user_agent, token)
+            return token_created
+        else:
+            error = {'message': 'invalid email'}
+            raise serializers.ValidationError(error)
+
+    user = serializers.ReadOnlyField(source='user.pk')
+    email = serializers.CharField(max_length=50, required=True)
+    token = serializers.CharField(max_length=50, read_only=True)
+    ip = serializers.CharField(max_length=15, read_only=True)
+    user_agent = serializers.CharField(max_length=100, read_only=True)
+    creation_timestamp = serializers.DateTimeField(read_only=True)

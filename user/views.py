@@ -9,9 +9,10 @@ from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST
 
-from .models import Profile
-from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
-from .serializers import UserSerializer, ProfileSerializer
+from .models import Profile, ResetPasswordToken
+from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions, \
+    ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
+from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer
 from rest_framework import permissions
 
 
@@ -26,6 +27,7 @@ from rest_framework import permissions
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
 from .tokens import account_activation_token
+from .utils import get_client_ip
 
 
 class UserList(generics.ListCreateAPIView):
@@ -99,3 +101,21 @@ class ActivateAccount(View):
 #   Password reset
 #
 # ----------------------------------------------------------------------------------------------------------------------
+
+class ResetPasswordTokenList(generics.ListCreateAPIView):
+    queryset = ResetPasswordToken.objects.all()
+    serializer_class = ResetPasswordTokenSerializer
+    permission_classes = [ResetPasswordTokenListPermissions]
+
+    def perform_create(self, serializer):
+        user_agent = self.request.META['HTTP_USER_AGENT']
+        ip = get_client_ip(self.request)
+        serializer.save(ip=ip, user_agent=user_agent)
+
+
+class ResetPasswordTokenDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ResetPasswordToken.objects.all()
+    serializer_class = ResetPasswordTokenSerializer
+    permission_classes = [ResetPasswordTokenSinglePermissions]
+
+
