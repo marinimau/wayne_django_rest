@@ -34,3 +34,12 @@ def send_reset_password_email(user, ip, user_agent, token):
         'token': token,
     })
     user.email_user(subject, message)
+
+
+def send_reset_password__confirm_email(user):
+    subject = 'Wayne - Reset your password'
+    message = render_to_string('email_templates/password_modified_email.html', {
+        'user': user,
+        'domain': 'wayneighboors.com'
+    })
+    user.email_user(subject, message)

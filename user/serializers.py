@@ -1,12 +1,13 @@
 from datetime import datetime
 import re
 
+from django.http import JsonResponse
 from django.utils import timezone
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from user.models import Profile, ResetPasswordToken
 from user.tokens import password_reset_token
-from user.utils import send_confirm_registration_email, send_reset_password_email
+from user.utils import send_confirm_registration_email, send_reset_password_email, send_reset_password__confirm_email
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -312,6 +313,14 @@ def check_if_already_exists_and_delete_token(user):
     return
 
 
+def get_token_by_user(user):
+    if ResetPasswordToken.objects.filter(user=user).exists():
+        return ResetPasswordToken.objects.get(user=user)
+    else:
+        error = {'message': 'no token for the given user'}
+        raise serializers.ValidationError(error)
+
+
 class ResetPasswordTokenSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
@@ -344,3 +353,45 @@ class ResetPasswordTokenSerializer(serializers.Serializer):
     ip = serializers.CharField(max_length=15, read_only=True)
     user_agent = serializers.CharField(max_length=100, read_only=True)
     creation_timestamp = serializers.DateTimeField(read_only=True)
+
+
+def compare_and_validate_tokens(token_obj, validated_data):
+    token_get = validated_data.get('token', None)
+    if token_get is not None and token_obj.token == token_get:
+        if token_obj.creation_timestamp is not None and (timezone.now() - token_obj.creation_timestamp).days <= 1:
+            return True
+        else:
+            error = {'message': 'token expired'}
+            raise serializers.ValidationError(error)
+    else:
+        error = {'message': 'invalid token'}
+        raise serializers.ValidationError(error)
+
+
+class AlterPasswordByToken(serializers.Serializer):
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        email = validated_data.get('email', None)
+        if check_if_exist_email(email):
+            user = User.objects.get(email=email)
+            token_stored = get_token_by_user(user)
+            # check token
+            compare_and_validate_tokens(token_stored, validated_data)
+            # if token is ok
+            update_password(user, validated_data)
+            # if password is update delete token
+            # ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
+            send_reset_password__confirm_email(user)
+            success = {'message': 'password modified'}
+            return JsonResponse(success)
+        else:
+            error = {'message': 'invalid email'}
+            raise serializers.ValidationError(error)
+
+    token = serializers.CharField(max_length=40, required=True)
+    email = serializers.CharField(max_length=50, required=True)
+    password = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)
+    password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)

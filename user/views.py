@@ -12,7 +12,7 @@ from rest_framework.status import HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST
 from .models import Profile, ResetPasswordToken
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions, \
     ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
-from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer
+from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer, AlterPasswordByToken
 from rest_framework import permissions
 
 
@@ -118,4 +118,12 @@ class ResetPasswordTokenDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ResetPasswordTokenSerializer
     permission_classes = [ResetPasswordTokenSinglePermissions]
 
+
+class AlterPasswordByTokenAndEmail(generics.ListCreateAPIView):
+    """
+    Reset password
+    """
+    queryset = ResetPasswordToken.objects.all()
+    serializer_class = AlterPasswordByToken
+    permission_classes = [ResetPasswordTokenListPermissions]
 
