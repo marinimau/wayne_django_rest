@@ -5,44 +5,121 @@ from user.models import Profile
 from user.utils import send_confirm_registration_email
 
 
+def check_password_strength(password):
+    return True
+
+
+def update_password(instance, validated_data):
+    # alter password
+    password = validated_data.get('password', None)
+    password2 = validated_data.get('password2', None)
+    if password is not None and password == password2 and check_password_strength(password):
+        instance.set_password(raw_password=password)
+    return
+
+
+def deactivate_account(instance, validated_data):
+    # deactivate account - one way
+    is_active = validated_data.get('is_active', instance.is_active)
+    if is_active is False and is_active != instance.is_active:
+        instance.is_active = is_active
+    return
+
+
+def update_email(instance, validated_data):
+    instance.email = validated_data.get('email', instance.email)
+    return
+
+
+def update_username(instance, validated_data):
+    username = validated_data.get('username', instance.username)
+    instance.username = username.lower()
+    return
+
+
+def update_name_and_surname(instance, validated_data):
+    instance.first_name = validated_data.get('first_name', instance.first_name)
+    instance.last_name = validated_data.get('last_name', instance.last_name)
+    return
+
+
+def check_if_exist_email(email):
+    return User.objects.filter(email=email).count() != 0
+
+
+def check_if_exist_username(username):
+    return User.objects.filter(username=username).count() != 0
+
+
+def check_input(email, username):
+    if email is None or username is None:
+        error = {'message': 'input error'}
+        return False, error
+    # check if email is already used
+    elif check_if_exist_email(email):
+        error = {'message': 'email already used'}
+        return False, error
+    # check if username is already used
+    elif check_if_exist_username(username):
+        error = {'message': 'username already used'}
+        return False, error
+    else:
+        return True, None
+
+
+def check_password(password, password2):
+    if password is None:
+        error = {'message': 'input error'}
+        return False, error
+    elif not check_password_strength(password):
+        error = {'message': 'password unsecure'}
+        return False, error
+    elif password != password2:
+        error = {'message': 'password mismatch'}
+        return False, error
+    else:
+        return True, None
+
+
 class UserSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
+        # email
+        update_email(instance, validated_data)
         # username
-        username = validated_data.get('username', instance.username)
-        instance.username = username.lower()
+        update_username(instance, validated_data)
         # name and surname
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        # deactivate account - one way
-        is_active = validated_data.get('is_active', instance.is_active)
-        if is_active is False and is_active != instance.is_active:
-            instance.is_active = is_active
-        # alter password
-        password = validated_data.get('password', None)
-        password2 = validated_data.get('password2', None)
-        if password is not None and password == password2:
-            instance.set_password(raw_password=password)
+        update_name_and_surname(instance, validated_data)
+        # deactivate account
+        deactivate_account(instance, validated_data)
+        # update password
+        update_password(instance, validated_data)
         instance.save()
         return instance
 
     def create(self, validated_data):
         date_joined = timezone.now()
-        username = validated_data.pop('username')
-        password = validated_data.pop('password')
-        password2 = validated_data.pop('password2')
-        if password == password2:
-            user_created = User.objects.create(username=username.lower(), is_active=False, date_joined=date_joined, **validated_data)
-            Profile.objects.create(user=user_created, email_confirmed=False)
-            user_created.set_password(password)
-            user_created.save()
-            # send email
-            send_confirm_registration_email(user_created)
-            return user_created
-        else:
-            error = {'message': 'password mismatch'}
-            raise serializers.ValidationError(error)
+        email = validated_data.pop('email', None)
+        username = validated_data.pop('username', None)
+        # check input
+        result, msg = check_input(email, username)
+        if not result:
+            raise serializers.ValidationError(msg)
+        # check passwords
+        password = validated_data.pop('password', None)
+        password2 = validated_data.pop('password2', None)
+        result, msg = check_password(password, password2)
+        if not result:
+            raise serializers.ValidationError(msg)
+        # if there are no errors
+        user_created = User.objects.create(email=email, username=username.lower(), is_active=False,
+                                           date_joined=date_joined, **validated_data)
+        Profile.objects.create(user=user_created, email_confirmed=False)
+        user_created.set_password(password)
+        user_created.save()
+        # send email
+        send_confirm_registration_email(user_created)
+        return user_created
 
     id = serializers.CharField(read_only=True)
     email = serializers.EmailField(required=False)
@@ -84,6 +161,3 @@ class ProfileSerializer(serializers.Serializer):
     ui_pref = serializers.CharField(allow_blank=True, required=False)
     birth_date = serializers.CharField(allow_blank=True, required=False)
     email_confirmed = serializers.BooleanField(required=False)
-
-
-
