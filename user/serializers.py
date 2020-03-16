@@ -1,9 +1,25 @@
+from datetime import datetime
+import re
+
 from django.utils import timezone
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from user.models import Profile
 from user.utils import send_confirm_registration_email
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   User management
+#       -registration
+#       -data manipulation
+#       -account deactivation
+#       -profile creation
+#       -password reset
+#       -validators for each field
+#       -email trigger
+#
+# ----------------------------------------------------------------------------------------------------------------------
 
 def check_password_strength(password):
     return True
@@ -132,23 +148,130 @@ class UserSerializer(serializers.Serializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   Profile management
+#       -update field
+#       -data manipulation
+#       -validators for each field
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
+def validate_bio(instance, validated_data):
+    bio = validated_data.get('bio', instance.bio)
+    if bio != instance.bio:
+        # if the request edit bio field
+        if len(bio) <= 200:
+            instance.bio = bio
+            return
+        else:
+            error = {'message': 'bio is too long'}
+            raise serializers.ValidationError(error)
+
+
+def validate_cellular(instance, validated_data):
+    cellular = validated_data.get('cellular', instance.cellular)
+    if cellular != instance.cellular:
+        # if the request edit cellular field
+        if re.search("^\+[0-9]{2,3} [0-9]{6,13}$", cellular):
+            instance.cellular = cellular
+            return
+        else:
+            error = {'message': 'invalid cellular number format'}
+            raise serializers.ValidationError(error)
+
+
+def validate_gender(instance, validated_data):
+    gender = validated_data.get('gender', instance.gender).upper()
+    if gender != instance.gender:
+        # if the request edit gender field
+        if gender in dict(Profile.Gender.choices):
+            instance.gender = gender
+            return
+        else:
+            error = {'message': 'invalid value for gender'}
+            raise serializers.ValidationError(error)
+
+
+def validate_country(instance, validated_data):
+    country = validated_data.get('country', instance.country).upper()
+    if country != instance.country:
+        # if the request edit language field
+        if country in dict(Profile.Country.choices):
+            instance.country = country
+            return
+        else:
+            error = {'message': 'invalid value for country'}
+            raise serializers.ValidationError(error)
+
+
+def validate_language(instance, validated_data):
+    language = validated_data.get('language', instance.language).upper()
+    if language != instance.language:
+        # if the request edit language field
+        if language in dict(Profile.Language.choices):
+            instance.language = language
+            return
+        else:
+            error = {'message': 'invalid value for language'}
+            raise serializers.ValidationError(error)
+
+
+def validate_birth_date(instance, validated_data):
+    birth_date = validated_data.get('birth_date', instance.birth_date)
+    if birth_date != instance.birth_date:
+        # if the request edit language field
+        try:
+            date_clean = datetime.strptime(birth_date, '%Y-%m-%d')
+        except serializers.ValidationError:
+            date_clean = None
+            error = {'message': 'invalid date format in birth_date'}
+            raise serializers.ValidationError(error)
+        # if format is valid
+        if date_clean is not None and (datetime.now() - date_clean).days/365 >= 16:
+            instance.birth_date = birth_date
+            return
+        else:
+            error = {'message': 'invalid birth_date, You must be at least 16 years old to register.'}
+            raise serializers.ValidationError(error)
+
+
+def validate_ui_pref(instance, validated_data):
+    ui_pref = validated_data.get('ui_pref', instance.ui_pref).upper()
+    if ui_pref != instance.ui_pref:
+        # if the request edit language field
+        if ui_pref in dict(Profile.UIMode.choices):
+            instance.ui_pref = ui_pref
+            return
+        else:
+            error = {'message': 'invalid choice for UI pref'}
+            raise serializers.ValidationError(error)
+
+
 class ProfileSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
-        instance.bio = validated_data.get('bio', instance.bio)
+        # validate bio
+        validate_bio(instance, validated_data)
         instance.location = validated_data.get('location', instance.location)
-        instance.cellular = validated_data.get('cellular', instance.cellular)
-        instance.gender = validated_data.get('gender', instance.gender)
-        instance.country = validated_data.get('country', instance.country)
-        instance.language = validated_data.get('language', instance.language)
-        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-        instance.ui_pref = validated_data.get('ui_pref', instance.ui_pref)
+        # validate cellular
+        validate_cellular(instance, validated_data)
+        # validate gender
+        validate_gender(instance, validated_data)
+        # validate country
+        validate_country(instance, validated_data)
+        # validate language
+        validate_language(instance, validated_data)
+        # validate birth_date
+        validate_birth_date(instance, validated_data)
+        # validate ui_pref
+        validate_ui_pref(instance, validated_data)
         instance.save()
         return instance
 
     def create(self, validated_data):
-        validated_data.pop('email_confirmed')
-        return Profile.objects.create(email_confirmed=False, **validated_data)
+        error = {'message': 'profile instance is created only with user creation'}
+        raise serializers.ValidationError(error)
 
     # user = UserSerializer()
     user = serializers.ReadOnlyField(source='user.pk')

@@ -42,7 +42,10 @@ class ProfileListPermissions(permissions.BasePermission):
     Custom permission to profile list
     """
     def has_permission(self, request, view):
-        return request.user.is_superuser
+        if request.method == 'POST':
+            return False
+        else:
+            return request.user.is_superuser
 
 
 class ProfileEditPermissions(permissions.BasePermission):
@@ -56,6 +59,6 @@ class ProfileEditPermissions(permissions.BasePermission):
             return True
         # If request is delete, only admin can perform this operation
         if request.method == 'DELETE':
-            return request.user.is_superuser
+            return False
         # Write permissions are only allowed to the owner of the snippet.
         return obj.user == request.user or request.user.is_superuser

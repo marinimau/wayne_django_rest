@@ -8,10 +8,10 @@ from django.utils.translation import gettext_lazy as _
 class Profile(models.Model):
 
     class Gender(models.TextChoices):
-        MALE = 'M', _('Male')
-        FEMALE = 'F', _('Female')
-        OTHER = 'O', _('Other')
-        UNSPECIFIED = 'U', _('Unspecified')
+        MALE = 'M', _('M')
+        FEMALE = 'F', _('F')
+        OTHER = 'O', _('O')
+        UNSPECIFIED = 'U', _('U')
 
     class Country(models.TextChoices):
         IT = 'IT', _('Italy')
