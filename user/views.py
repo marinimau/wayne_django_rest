@@ -1,8 +1,11 @@
 from django.contrib.auth.models import User
+from django.shortcuts import render
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from rest_framework import generics
+from rest_framework.decorators import renderer_classes, api_view
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST
 
@@ -84,8 +87,8 @@ class ActivateAccount(View):
             user.is_active = True
             profile.email_confirmed = True
             user.save()
-            success = {'message': 'account activated'}
-            return Response(success, status=HTTP_202_ACCEPTED)
+            msg = {'message': 'Account activated'}
+            return render(request, 'account_activated.html', msg)
         else:
-            error = {'message': 'password mismatch'}
-            raise Response(error, status=HTTP_400_BAD_REQUEST)
+            msg = {'message': 'Invalid token'}
+            return render(request, 'account_activated.html', msg)
