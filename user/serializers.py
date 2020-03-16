@@ -383,10 +383,10 @@ class AlterPasswordByToken(serializers.Serializer):
             # if token is ok
             update_password(user, validated_data)
             # if password is update delete token
-            # ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
+            ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
             send_reset_password__confirm_email(user)
             success = {'message': 'password modified'}
-            return JsonResponse(success)
+            return success
         else:
             error = {'message': 'invalid email'}
             raise serializers.ValidationError(error)
