@@ -48,13 +48,24 @@ def deactivate_account(instance, validated_data):
 
 
 def update_email(instance, validated_data):
-    instance.email = validated_data.get('email', instance.email)
+    email = validated_data.get('email', instance.email)
+    if email != instance.email:
+        if not check_if_exist_email(email):
+            instance.email = email
+        else:
+            error = {'message': 'email already used'}
+            raise serializers.ValidationError(error)
     return
 
 
 def update_username(instance, validated_data):
     username = validated_data.get('username', instance.username)
-    instance.username = username.lower()
+    if username.lower() != instance.username.lower():
+        if not check_if_exist_username(username):
+            instance.username = username.lower()
+        else:
+            error = {'message': 'username already used'}
+            raise serializers.ValidationError(error)
     return
 
 
@@ -93,7 +104,7 @@ def check_password(password, password2):
         error = {'message': 'input error'}
         return False, error
     elif not check_password_strength(password):
-        error = {'message': 'password unsecure'}
+        error = {'message': 'password insecure'}
         return False, error
     elif password != password2:
         error = {'message': 'password mismatch'}
