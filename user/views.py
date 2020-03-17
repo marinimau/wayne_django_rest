@@ -4,10 +4,9 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from rest_framework import generics, mixins
-from rest_framework.decorators import renderer_classes, api_view
-from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.status import HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_404_NOT_FOUND
 
 from .models import Profile, ResetPasswordToken
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions, \
@@ -129,4 +128,15 @@ class AlterPasswordByTokenAndEmail(mixins.CreateModelMixin, generics.GenericAPIV
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   404 error
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
+@api_view()
+def error_page(request):
+    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
 

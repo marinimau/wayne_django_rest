@@ -1,16 +1,20 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse, path, include
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, APIClient
+from rest_framework.test import APIRequestFactory, APIClient, URLPatternsTestCase, force_authenticate
 
 from user.models import Profile
 
 
-class UserTestAcceptance(TestCase):
+class UserTestAcceptance(TestCase, URLPatternsTestCase):
 
     factory = APIRequestFactory()
     client = APIClient()
+
+    urlpatterns = [
+        path('', include('user.urls')),
+    ]
 
     def setUp(self):
         # User setup
@@ -37,6 +41,26 @@ class UserTestAcceptance(TestCase):
         url = reverse('users-list')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # ------------------------------------------------------------------------------------------------------------------
+    #
+    #   User detail view
+    #
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def test_view_user_detail_default(self):
+        factory = APIRequestFactory()
+        user = User.objects.get(username='utente1')
+        # Make an authenticated request to the view...
+        request = factory.get('/users/1')
+        force_authenticate(request, user=user)
+        response = self.client.get('/users/1')
+        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+
+    def test_view_user_list_detail_as_superuser(self):
+        self.client.login(username='admin', password='Prova123.')
+        response = self.client.get('/users/1')
+        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
 
     # ------------------------------------------------------------------------------------------------------------------
     #
@@ -186,18 +210,22 @@ class UserTestAcceptance(TestCase):
 
     # Email
 
-    def update_email_correct(self):
-        users_count = User.objects.count()
-        profile_count = Profile.objects.count()
-        url = '/users/1/'
+    def test_update_email_correct(self):
+        self.client.login(username='utente1', password='Prova123.')
+        url = '/users/2/'
         data = {
-            'email': 'test@test.com',
+            'email': 'update@test.com',
         }
         response = self.client.put(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        self.assertEqual(response.data['message'], 'input error')
-        self.assertEqual(User.objects.count(), users_count)
-        self.assertEqual(Profile.objects.count(), profile_count)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_email_unauthorized(self):
+        url = '/users/1/'
+        data = {
+            'email': 'update2@test.com',
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     # Username
 
