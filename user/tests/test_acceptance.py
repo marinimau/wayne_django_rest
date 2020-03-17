@@ -18,11 +18,11 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
 
     def setUp(self):
         # User setup
-        self.user = User.objects.create_user(username='admin', password='Prova123.', is_superuser=True, email='admin@test.com')
+        self.user = User.objects.create_user(pk=4, username='admin', password='Prova123.', is_superuser=True, email='admin@test.com')
         self.user.save()
-        self.user = User.objects.create_user(username='utente1', password='Prova123.', email='utente1@test.com')
+        self.user = User.objects.create_user(pk=5, username='utente1', password='Prova123.', email='utente1@test.com')
         self.user.save()
-        self.user2 = User.objects.create_user(username='utente2', password='Prova123.', email='utente2@test.com')
+        self.user2 = User.objects.create_user(pk=6, username='utente2', password='Prova123.', email='utente2@test.com')
         self.user2.save()
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
 
     def test_update_email_correct(self):
         self.client.login(username='utente1', password='Prova123.')
-        url = '/users/2/'
+        url = '/users/4/'
         data = {
             'email': 'update@test.com',
         }
