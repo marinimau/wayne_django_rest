@@ -24,7 +24,7 @@ from user.utils import send_confirm_registration_email, send_reset_password_emai
 # ----------------------------------------------------------------------------------------------------------------------
 
 def check_password_strength(password):
-    return re.search("^(?=.*[A-Z])(?=.*[!@#$&*.-_])(?=.*[0-9])(?=.*[a-z]).{8,40}$", password)
+    return re.search("^(?=.*[A-Z])(?=.*[!@#$&*.\-_])(?=.*[0-9])(?=.*[a-z]).{8,40}$", password)
 
 
 def update_password(instance, validated_data):
@@ -368,10 +368,11 @@ def compare_and_validate_tokens(token_obj, validated_data):
         raise serializers.ValidationError(error)
 
 
-class AlterPasswordByToken(serializers.Serializer):
+class AlterPasswordByTokenSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
-        pass
+        error = {'message': 'no update request for this model'}
+        raise serializers.ValidationError(error)
 
     def create(self, validated_data):
         email = validated_data.get('email', None)
@@ -384,9 +385,10 @@ class AlterPasswordByToken(serializers.Serializer):
             update_password(user, validated_data)
             # if password is update delete token
             ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
+            user.save()
             send_reset_password__confirm_email(user)
             success = {'message': 'password modified'}
-            return success
+            return token_stored
         else:
             error = {'message': 'invalid email'}
             raise serializers.ValidationError(error)

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
-from rest_framework import generics
+from rest_framework import generics, mixins
 from rest_framework.decorators import renderer_classes, api_view
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
@@ -12,7 +12,7 @@ from rest_framework.status import HTTP_202_ACCEPTED, HTTP_400_BAD_REQUEST
 from .models import Profile, ResetPasswordToken
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions, \
     ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
-from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer, AlterPasswordByToken
+from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer, AlterPasswordByTokenSerializer
 from rest_framework import permissions
 
 
@@ -31,7 +31,7 @@ from .utils import get_client_ip
 
 
 class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('date_joined')
     serializer_class = UserSerializer
     permission_classes = [UserListPermissions]
 
@@ -54,7 +54,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProfileList(generics.ListCreateAPIView):
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.all().order_by('user')
     serializer_class = ProfileSerializer
     permission_classes = [ProfileListPermissions]
 
@@ -103,7 +103,7 @@ class ActivateAccount(View):
 # ----------------------------------------------------------------------------------------------------------------------
 
 class ResetPasswordTokenList(generics.ListCreateAPIView):
-    queryset = ResetPasswordToken.objects.all()
+    queryset = ResetPasswordToken.objects.all().order_by('user')
     serializer_class = ResetPasswordTokenSerializer
     permission_classes = [ResetPasswordTokenListPermissions]
 
@@ -119,11 +119,14 @@ class ResetPasswordTokenDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [ResetPasswordTokenSinglePermissions]
 
 
-class AlterPasswordByTokenAndEmail(generics.ListCreateAPIView):
+class AlterPasswordByTokenAndEmail(mixins.CreateModelMixin, generics.GenericAPIView):
     """
     Reset password
     """
-    queryset = ResetPasswordToken.objects.all()
-    serializer_class = AlterPasswordByToken
+    queryset = ResetPasswordToken.objects.all().order_by('user')
+    serializer_class = AlterPasswordByTokenSerializer
     permission_classes = [ResetPasswordTokenListPermissions]
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
