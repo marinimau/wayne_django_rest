@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse, path, include
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APIClient, URLPatternsTestCase, force_authenticate
@@ -24,6 +24,7 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.user.save()
         self.user2 = User.objects.create_user(pk=6, username='utente2', password='Prova123.', email='utente2@test.com')
         self.user2.save()
+        self.client = Client()
 
     # ------------------------------------------------------------------------------------------------------------------
     #
@@ -209,7 +210,6 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     # ------------------------------------------------------------------------------------------------------------------
 
     # Email
-
     def test_update_email_correct(self):
         self.client.login(username='utente1', password='Prova123.')
         url = '/users/4/'
