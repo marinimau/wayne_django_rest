@@ -19,10 +19,10 @@ class ProfileSignUpForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'name', 'surname', 'birth_date', 'gender']
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 #   Sign-in method for no-staff user
 # ----------------------------------------------------------------------------------------------------------------------
-
 
 class ProfileSignInForm(forms.Form):
     email = forms.EmailField(label="Email")
