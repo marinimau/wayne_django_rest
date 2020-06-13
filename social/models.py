@@ -28,8 +28,8 @@ class SocialLabel(models.Model):
         PUBLIC = 'PUBLIC', _('PUBLIC')
         PARENT = 'PARENT', _('PARENT')
 
-    id = models.Index()
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_label')
     privacy = models.CharField(null=False, max_length=10, choices=LabelPrivacyConfig.choices,
                                default=LabelPrivacyConfig.PUBLIC)
     title = models.CharField(null=False, max_length=20)
@@ -73,8 +73,8 @@ class SocialAccount(models.Model):
         EMAIL = 'EMAIL', _('EMAIL')
         PHONE = 'PHONE', _('PHONE')
 
-    id = models.Index()
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_account')
     privacy = models.CharField(null=False, max_length=10, choices=AccountPrivacyConfig.choices,
                                default=AccountPrivacyConfig.PARENT)
     type = models.CharField(null=False, max_length=8, choices=ContactType.choices, default=ContactType.URI)

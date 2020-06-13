@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
 from .models import SocialLabel, SocialAccount
 from .permissions import SocialLabelPermission, SocialLabelEditEditPermissions
+from .serializers import LabelSerializer
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -16,13 +17,16 @@ from .permissions import SocialLabelPermission, SocialLabelEditEditPermissions
 
 class LabelList(generics.ListCreateAPIView):
     queryset = SocialLabel.objects.all().order_by('title')
-    serializer_class = UserSerializer
+    serializer_class = LabelSerializer
     permission_classes = [SocialLabelPermission]
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)
 
 
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialLabel.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = LabelSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, SocialLabelEditEditPermissions]
 
 
