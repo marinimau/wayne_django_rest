@@ -17,12 +17,6 @@ urlpatterns = [
     #   account activations urls
     # ------------------------------------------------------------------------------------------------------------------
     path('activate/<uidb64>/<token>/', views.ActivateAccount.as_view(), name='activate'),
-    # ------------------------------------------------------------------------------------------------------------------
-    #   password reset
-    # ------------------------------------------------------------------------------------------------------------------
-    path('password_reset/', views.ResetPasswordTokenList.as_view()),
-    path('password_reset/<int:pk>/', views.ResetPasswordTokenDetail.as_view()),
-    path('password_reset/confirm/', views.AlterPasswordByTokenAndEmail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

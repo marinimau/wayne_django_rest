@@ -1,4 +1,8 @@
 from rest_framework import generics, permissions
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.status import HTTP_404_NOT_FOUND
+
 from .models import SocialLabel, SocialAccount
 from .permissions import SocialLabelPermission, SocialLabelEditEditPermissions
 from .serializers import LabelSerializer
@@ -41,3 +45,13 @@ class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   404 error
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
+@api_view()
+def error_page(request):
+    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)

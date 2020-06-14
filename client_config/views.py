@@ -36,3 +36,14 @@ class ConfigDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Config.objects.all()
     serializer_class = ConfigSerializer
     permission_classes = [ConfigEditPermissions]
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   404 error
+#
+# ----------------------------------------------------------------------------------------------------------------------
+
+@api_view()
+def error_page(request):
+    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)

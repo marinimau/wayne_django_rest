@@ -7,11 +7,9 @@ from rest_framework import generics, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-from .models import Profile, ResetPasswordToken
-from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions, \
-    ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
-from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer, \
-    AlterPasswordByTokenSerializer
+from .models import Profile
+from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
+from .serializers import UserSerializer, ProfileSerializer
 from rest_framework import permissions
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -94,41 +92,6 @@ class ActivateAccount(View):
         else:
             msg = {'message': 'Invalid token'}
             return render(request, 'account_activated.html', msg)
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#   Password reset
-#
-# ----------------------------------------------------------------------------------------------------------------------
-
-class ResetPasswordTokenList(generics.ListCreateAPIView):
-    queryset = ResetPasswordToken.objects.all().order_by('user')
-    serializer_class = ResetPasswordTokenSerializer
-    permission_classes = [ResetPasswordTokenListPermissions]
-
-    def perform_create(self, serializer):
-        user_agent = self.request.META['HTTP_USER_AGENT']
-        ip = get_client_ip(self.request)
-        serializer.save(ip=ip, user_agent=user_agent)
-
-
-class ResetPasswordTokenDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ResetPasswordToken.objects.all()
-    serializer_class = ResetPasswordTokenSerializer
-    permission_classes = [ResetPasswordTokenSinglePermissions]
-
-
-class AlterPasswordByTokenAndEmail(mixins.CreateModelMixin, generics.GenericAPIView):
-    """
-    Reset password
-    """
-    queryset = ResetPasswordToken.objects.all().order_by('user')
-    serializer_class = AlterPasswordByTokenSerializer
-    permission_classes = [ResetPasswordTokenListPermissions]
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
