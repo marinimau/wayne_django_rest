@@ -7,13 +7,12 @@ from rest_framework import generics, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-
 from .models import Profile, ResetPasswordToken
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions, \
     ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
-from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer, AlterPasswordByTokenSerializer
+from .serializers import UserSerializer, ProfileSerializer, ResetPasswordTokenSerializer, \
+    AlterPasswordByTokenSerializer
 from rest_framework import permissions
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 #   Generic User views
@@ -40,6 +39,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, UserEditPermissions]
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 #   User Profile views
 #   -   profile_list
@@ -65,6 +65,7 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, ProfileEditPermissions]
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
@@ -139,4 +140,3 @@ class AlterPasswordByTokenAndEmail(mixins.CreateModelMixin, generics.GenericAPIV
 @api_view()
 def error_page(request):
     return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
-

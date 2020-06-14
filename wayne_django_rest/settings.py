@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'user',
+    'client_config',
     'social',
 ]
 
@@ -93,10 +94,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'wayne',
-        'USER': 'wayne',
+        'USER': 'postgres', # mac: 'postgres', desktop : 'wayne'
         'PASSWORD': 'canon1997',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5431', # mac : '5431', desktop : '5432'
     }
 }
 

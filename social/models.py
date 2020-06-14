@@ -79,7 +79,7 @@ class SocialAccount(models.Model):
                                default=AccountPrivacyConfig.PARENT)
     type = models.CharField(null=False, max_length=8, choices=ContactType.choices, default=ContactType.URI)
     platform = models.CharField(null=False, max_length=30, blank=False)
-    value: models.CharField(null=False, max_length=100, blank=False)
+    value = models.CharField(null=False, max_length=100, blank=False)
     label = models.OneToOneField(SocialLabel, on_delete=models.CASCADE, related_name='label')
     required = models.BooleanField(null=False, default=False)
     creation_timestamp = models.DateTimeField(blank=False, default=now)
