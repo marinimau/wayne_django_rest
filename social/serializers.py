@@ -3,16 +3,17 @@ from rest_framework import serializers
 from .models import SocialLabel, SocialAccount
 
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 # Label
 # ----------------------------------------------------------------------------------------------------------------------
 
-def check_if_exists_label(title):
-    return SocialLabel.objects.filter(title=title).count() != 0
+def check_if_exists_label(title, user):
+    return SocialLabel.objects.filter(title=title).filter(user=user).count() != 0
 
 
-def validate_title(title):
-    return (not check_if_exists_label(title)) and 3 < len(title) <= 20
+def validate_title(title, user):
+    return (not check_if_exists_label(title, user)) and 3 < len(title) <= 20
 
 
 def validate_privacy(privacy):
@@ -33,19 +34,39 @@ class LabelSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         title = validated_data.get('title', None)
-        user_id = validated_data.get('user_id', None)
+        user = validated_data.get('user', None)
         privacy = validated_data.get('privacy', None).upper()
         validate_privacy(privacy)
-        if validate_title(title) and user_id is not None:
-            label_created = SocialLabel.objects.create(title=title.lower(), user_id=user_id, privacy=privacy,
-                                                       required=False, creation_timestamp=timezone.now())
+        if validate_title(title, user) and user is not None:
+            label_created = SocialLabel.objects.create(title=title.lower(), user=user,
+                                                       privacy=privacy, required=False,
+                                                       creation_timestamp=timezone.now())
             label_created.save()
+            return label_created
         else:
             error = {'message': 'error - label creation failed'}
             raise serializers.ValidationError(error)
 
-    auto_increment_id = serializers.ReadOnlyField(read_only=True)
+    id = serializers.ReadOnlyField(read_only=True)
     user = serializers.ReadOnlyField(source='user.pk', read_only=True)
     title = serializers.CharField(max_length=20, required=True)
     privacy = serializers.CharField(max_length=10, required=False)
-    required = serializers.ReadOnlyField(source='label.required', read_only=True)
+    required = serializers.ReadOnlyField(read_only=True)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Wall
+# ----------------------------------------------------------------------------------------------------------------------
+
+class SocialWallSerializer(serializers.Serializer):
+
+    def update(self, instance, validated_data):
+        error = {'message': 'error - no update for this model'}
+        raise serializers.ValidationError(error)
+
+    def create(self, validated_data):
+        error = {'message': 'error - no create for this model'}
+        raise serializers.ValidationError(error)
+
+    user = serializers.ReadOnlyField(source='user.pk', read_only=True)
+    labels = LabelSerializer(many=True, read_only=True)

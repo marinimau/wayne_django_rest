@@ -3,9 +3,30 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 
-from .models import SocialLabel, SocialAccount
-from .permissions import SocialLabelPermission, SocialLabelEditEditPermissions
-from .serializers import LabelSerializer
+from .models import SocialWall, SocialLabel, SocialAccount
+from .permissions import SocialLabelPermission, SocialLabelEditEditPermissions, SocialWallEditEditPermissions, \
+    SocialWallPermission
+from .serializers import SocialWallSerializer, LabelSerializer
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#   Generic Wall views
+#   -   wall_list
+#       - if GET:   list walls from different users
+#   -   wall_detail:
+#       - if GET:   show wall of a single user
+# ----------------------------------------------------------------------------------------------------------------------
+
+class WallList(generics.ListCreateAPIView):
+    queryset = SocialWall.objects.all()
+    serializer_class = SocialWallSerializer
+    permission_classes = [SocialWallPermission]
+
+
+class WallDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SocialWall.objects.all()
+    serializer_class = SocialWallSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, SocialWallEditEditPermissions]
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -25,7 +46,7 @@ class LabelList(generics.ListCreateAPIView):
     permission_classes = [SocialLabelPermission]
 
     def perform_create(self, serializer):
-        serializer.save(user_id=self.request.user)
+        serializer.save(user=self.request.user)
 
 
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):

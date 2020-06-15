@@ -78,7 +78,7 @@ class ActivateAccount(View):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
-            profile = Profile.objects.get(user=uid)
+            profile = Profile.objects.get(user=user)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
             profile = None

@@ -4,10 +4,21 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 
+class SocialWall(models.Model):
+    # ------------------------------------------------------------------------------------------------------------------
+    #
+    # SocialWall
+    #
+    # This model contains all social labels of a given user
+    #
+    # ------------------------------------------------------------------------------------------------------------------
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_wall', primary_key=True)
+
+
 class SocialLabel(models.Model):
     # ------------------------------------------------------------------------------------------------------------------
     #
-    # Label
+    # Social
     #
     # This model is used to store a label: label provides a group for social account items. There are also a 'system'
     # label: this label is created by default and it isn't editable (except for privacy field).
@@ -28,8 +39,11 @@ class SocialLabel(models.Model):
         PUBLIC = 'PUBLIC', _('PUBLIC')
         PARENT = 'PARENT', _('PARENT')
 
+    class Meta:
+        unique_together = (('user', 'title'),)
+
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_label')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='social_label')
     privacy = models.CharField(null=False, max_length=10, choices=LabelPrivacyConfig.choices,
                                default=LabelPrivacyConfig.PUBLIC)
     title = models.CharField(null=False, max_length=20)
@@ -37,7 +51,7 @@ class SocialLabel(models.Model):
     creation_timestamp = models.DateTimeField(blank=False, default=now)
 
     def __str__(self):
-        return self.user.username + str(self.id)
+        return self.title
 
 
 class SocialAccount(models.Model):

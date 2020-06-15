@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from user.models import Profile
 from client_config.models import Config
+from social.models import SocialWall
 from .validators import profile_validators, user_validators
 from user.utils import send_confirm_registration_email
 
@@ -51,6 +52,7 @@ class UserSerializer(serializers.Serializer):
                                            date_joined=date_joined, **validated_data)
         Profile.objects.create(user=user_created, email_confirmed=False)
         Config.objects.create(user=user_created)
+        SocialWall.objects.create(user=user_created)
         user_created.set_password(password)
         user_created.save()
         # send email
