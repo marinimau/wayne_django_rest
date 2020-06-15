@@ -23,7 +23,7 @@ class UserEditPermissions(permissions.BasePermission):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
-            return True
+            return True;
         # If request is delete, only admin can perform this operation
         if request.method == 'DELETE':
             return request.user.is_superuser

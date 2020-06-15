@@ -32,15 +32,30 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     #
     # ------------------------------------------------------------------------------------------------------------------
 
-    def test_view_user_list_default(self):
+    '''
+    test user list visualization without authentication
+    '''
+    def test_view_user_list_no_auth(self):
         url = reverse('users-list')
-        response = self.client.get(url, format='json')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    '''
+    test user list visualization with standard authentication
+    '''
+    def test_view_user_list_default_auth(self):
+        self.client.login(username='utente1', password='Prova123.')
+        url = reverse('users-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    '''
+    test user list visualization as superuser
+    '''
     def test_view_user_list_default_as_superuser(self):
         self.client.login(username='admin', password='Prova123.')
         url = reverse('users-list')
-        response = self.client.get(url, format='json')
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -49,19 +64,29 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     #
     # ------------------------------------------------------------------------------------------------------------------
 
-    def test_view_user_detail_default(self):
-        factory = APIRequestFactory()
-        user = User.objects.get(username='utente1')
-        # Make an authenticated request to the view...
-        request = factory.get('/users/1')
-        force_authenticate(request, user=user)
-        response = self.client.get('/users/1')
-        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+    '''
+    test user detail visualization no auth - 200_OK
+    '''
 
-    def test_view_user_list_detail_as_superuser(self):
+    def test_view_user_detail_no_auth(self):
+        response = self.client.get('/' + str(User.objects.get(username='utente1').id) + '/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    '''
+    test user detail visualization standard auth - 200_OK
+    '''
+    def test_view_user_detail_default_auth(self):
         self.client.login(username='admin', password='Prova123.')
-        response = self.client.get('/users/1')
-        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+        response = self.client.get('/' + str(User.objects.get(username='utente1').id) + '/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    '''
+    test user detail visualization superuser auth - 200_OK
+    '''
+    def test_view_user_list_detail_superuser_auth(self):
+        self.client.login(username='utente1', password='Prova123.')
+        response = self.client.get('/'+str(User.objects.get(username='utente1').id)+'/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # ------------------------------------------------------------------------------------------------------------------
     #
@@ -69,6 +94,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     #
     # ------------------------------------------------------------------------------------------------------------------
 
+    '''
+    test user registration correct
+    '''
     def test_registration_correct(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -91,6 +119,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertFalse(User.objects.get(username=data['username']).is_active)
         self.assertTrue(User.is_authenticated)
 
+    '''
+    test user registration email already exists
+    '''
     def test_registration_email_already_exists(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -107,6 +138,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertEqual(User.objects.count(), users_count)
         self.assertEqual(Profile.objects.count(), profile_count)
 
+    '''
+    test user registration username already exists
+    '''
     def test_registration_username_already_exists(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -123,6 +157,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['message'], 'username already used')
 
+    '''
+    test user registration password unsecure
+    '''
     def test_registration_password_unsecure(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -139,6 +176,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertEqual(User.objects.count(), users_count)
         self.assertEqual(Profile.objects.count(), profile_count)
 
+    '''
+    test user registration password mismatch
+    '''
     def test_registration_password_mismatch(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -155,6 +195,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertEqual(User.objects.count(), users_count)
         self.assertEqual(Profile.objects.count(), profile_count)
 
+    '''
+    test user registration input error 1
+    '''
     def test_registration_input_error_1(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -171,6 +214,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertEqual(User.objects.count(), users_count)
         self.assertEqual(Profile.objects.count(), profile_count)
 
+    '''
+    test user registration input error 2
+    '''
     def test_registration_input_error_2(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -187,6 +233,9 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
         self.assertEqual(User.objects.count(), users_count)
         self.assertEqual(Profile.objects.count(), profile_count)
 
+    '''
+    test user registration input error 3
+    '''
     def test_registration_input_error_3(self):
         users_count = User.objects.count()
         profile_count = Profile.objects.count()
@@ -209,28 +258,41 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     #
     # ------------------------------------------------------------------------------------------------------------------
 
-    # Email
-    def test_update_email_correct(self):
-        self.client.login(username='utente1', password='Prova123.')
-        url = '/users/4/'
+    '''
+    exec the request to update the email
+    '''
+    def get_update_email_response(self):
+        url = '/' + str(User.objects.get(username='utente1').id) + '/'
         data = {
             'email': 'update@test.com',
         }
-        response = self.client.put(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return self.client.put(url, data, content_type='application/json', format='json')
 
+    '''
+    test user update email correct
+    '''
+    def test_update_email_correct(self):
+        self.client.login(username='utente1', password='Prova123.')
+        self.assertEqual(self.get_update_email_response().status_code, status.HTTP_200_OK)
+
+    '''
+    test user update email no auth provided
+    '''
     def test_update_email_unauthorized(self):
-        url = '/users/1/'
-        data = {
-            'email': 'update2@test.com',
-        }
-        response = self.client.put(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(self.get_update_email_response().status_code, status.HTTP_401_UNAUTHORIZED)
+
+    '''
+    test user update email with other user auth
+    '''
+    def test_update_email_other_user_auth(self):
+        self.client.login(username='utente2', password='Prova123.')
+        self.assertEqual(self.get_update_email_response().status_code, status.HTTP_403_FORBIDDEN)
 
     # Username
 
     # Password
 
+'''
     # ------------------------------------------------------------------------------------------------------------------
     #
     #   Deactivate account
@@ -256,7 +318,7 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     # ------------------------------------------------------------------------------------------------------------------
 
 
-
+'''
 
 
 
