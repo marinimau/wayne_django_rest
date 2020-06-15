@@ -1,4 +1,11 @@
-import secrets
+#
+#
+#   Author: Mauro Marini
+#   Project: YODI
+#   License: Shareware
+#
+#
+
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
 

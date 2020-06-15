@@ -13,10 +13,17 @@ from django.contrib.auth.models import User
 # - name and surname
 # ----------------------------------------------------------------------------------------------------------------------
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+# evaluate the password strength
+# ----------------------------------------------------------------------------------------------------------------------
 def check_password_strength(password):
     return re.search("^(?=.*[A-Z])(?=.*[!@#$&*.\-_])(?=.*[0-9])(?=.*[a-z]).{8,40}$", password)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# evaluate the passowrd (security and matching)
+# ----------------------------------------------------------------------------------------------------------------------
 def check_password(password, password2):
     if password is None:
         error = {'message': 'input error'}
@@ -31,6 +38,9 @@ def check_password(password, password2):
         return True, None
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# password update
+# ----------------------------------------------------------------------------------------------------------------------
 def update_password(instance, validated_data):
     # alter password
     password = validated_data.get('password', instance.password)
@@ -43,6 +53,9 @@ def update_password(instance, validated_data):
             raise serializers.ValidationError(msg)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# deactivate account
+# ----------------------------------------------------------------------------------------------------------------------
 def deactivate_account(instance, validated_data):
     # deactivate account - one way
     is_active = validated_data.get('is_active', instance.is_active)
@@ -51,10 +64,16 @@ def deactivate_account(instance, validated_data):
     return
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# check if exists email
+# ----------------------------------------------------------------------------------------------------------------------
 def check_if_exist_email(email):
     return User.objects.filter(email=email).count() != 0
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# update email
+# ----------------------------------------------------------------------------------------------------------------------
 def update_email(instance, validated_data):
     email = validated_data.get('email', instance.email)
     if email != instance.email:
@@ -66,10 +85,16 @@ def update_email(instance, validated_data):
     return
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# check if exists username
+# ----------------------------------------------------------------------------------------------------------------------
 def check_if_exist_username(username):
     return User.objects.filter(username=username).count() != 0
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# update username
+# ----------------------------------------------------------------------------------------------------------------------
 def update_username(instance, validated_data):
     username = validated_data.get('username', instance.username)
     if username.lower() != instance.username.lower():
@@ -81,12 +106,18 @@ def update_username(instance, validated_data):
     return
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# update name and surname
+# ----------------------------------------------------------------------------------------------------------------------
 def update_name_and_surname(instance, validated_data):
     instance.first_name = validated_data.get('first_name', instance.first_name)
     instance.last_name = validated_data.get('last_name', instance.last_name)
     return
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# check input for user update and registration
+# ----------------------------------------------------------------------------------------------------------------------
 def check_input(email, username):
     if email is None or username is None:
         error = {'message': 'input error'}

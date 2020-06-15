@@ -261,34 +261,100 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
     '''
     exec the request to update the email
     '''
-    def get_update_email_response(self):
+    def get_update_email_response(self, existent=False):
         url = '/' + str(User.objects.get(username='utente1').id) + '/'
         data = {
             'email': 'update@test.com',
         }
+        if existent:
+            data = {
+                'email': 'utente2@test.com'
+            }
         return self.client.put(url, data, content_type='application/json', format='json')
 
     '''
     test user update email correct
     '''
     def test_update_email_correct(self):
+        old_email = User.objects.get(username='utente1').email
         self.client.login(username='utente1', password='Prova123.')
         self.assertEqual(self.get_update_email_response().status_code, status.HTTP_200_OK)
+        self.assertNotEqual(old_email, User.objects.get(username='utente1').email)
+
+    '''
+    test user update email - existent email
+    '''
+    def test_update_email_existent_email(self):
+        old_email = User.objects.get(username='utente1').email
+        self.client.login(username='utente1', password='Prova123.')
+        self.assertEqual(self.get_update_email_response(True).status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(old_email, User.objects.get(username='utente1').email)
 
     '''
     test user update email no auth provided
     '''
     def test_update_email_unauthorized(self):
+        old_email = User.objects.get(username='utente1').email
         self.assertEqual(self.get_update_email_response().status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(old_email, User.objects.get(username='utente1').email)
 
     '''
     test user update email with other user auth
     '''
     def test_update_email_other_user_auth(self):
+        old_email = User.objects.get(username='utente1').email
         self.client.login(username='utente2', password='Prova123.')
         self.assertEqual(self.get_update_email_response().status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(old_email, User.objects.get(username='utente1').email)
 
-    # Username
+    '''
+    exec the request to update the username
+    '''
+    def get_update_username_response(self, existent=False):
+        url = '/' + str(User.objects.get(username='utente1').id) + '/'
+        data = {
+            'username': 'new_username',
+        }
+        if existent:
+            data = {
+                'username': 'utente2',
+            }
+        return self.client.put(url, data, content_type='application/json', format='json')
+
+    '''
+    test user update username correct
+    '''
+    def test_update_username_correct(self):
+        old_username = User.objects.get(email='utente1@test.com').username
+        self.client.login(username='utente1', password='Prova123.')
+        self.assertEqual(self.get_update_username_response().status_code, status.HTTP_200_OK)
+        self.assertNotEqual(old_username, User.objects.get(email='utente1@test.com').username)
+
+    '''
+    test user update username existent username
+    '''
+    def test_update_username_existent_username(self):
+        old_username = User.objects.get(email='utente1@test.com').username
+        self.client.login(username='utente1', password='Prova123.')
+        self.assertEqual(self.get_update_username_response(True).status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(old_username, User.objects.get(email='utente1@test.com').username)
+
+    '''
+    test user update username no auth provided
+    '''
+    def test_update_username_unauthorized(self):
+        old_username = User.objects.get(email='utente1@test.com').username
+        self.assertEqual(self.get_update_username_response().status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(old_username, User.objects.get(email='utente1@test.com').username)
+
+    '''
+    test user update username with other user auth
+    '''
+    def test_update_username_other_user_auth(self):
+        old_username = User.objects.get(email='utente1@test.com').username
+        self.client.login(username='utente2', password='Prova123.')
+        self.assertEqual(self.get_update_username_response().status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(old_username, User.objects.get(email='utente1@test.com').username)
 
     # Password
 

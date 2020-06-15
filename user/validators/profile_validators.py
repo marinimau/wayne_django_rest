@@ -6,13 +6,18 @@ from datetime import datetime
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   Profile management
-#       -update field
-#       -data manipulation
-#       -validators for each field
+#   Profile validatos
+#       - location
+#       - bio
+#       - cellular
+#       - gender
+#       - birth date
 #
 # ----------------------------------------------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------------------------------
+# validate location
+# ----------------------------------------------------------------------------------------------------------------------
 def validate_location(instance, validated_data):
     location = validated_data.get('location', instance.location)
     if location != instance.location:
@@ -25,6 +30,9 @@ def validate_location(instance, validated_data):
             raise serializers.ValidationError(error)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# validate bio
+# ----------------------------------------------------------------------------------------------------------------------
 def validate_bio(instance, validated_data):
     bio = validated_data.get('bio', instance.bio)
     if bio != instance.bio:
@@ -37,6 +45,9 @@ def validate_bio(instance, validated_data):
             raise serializers.ValidationError(error)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# validate cellular
+# ----------------------------------------------------------------------------------------------------------------------
 def validate_cellular(instance, validated_data):
     cellular = validated_data.get('cellular', instance.cellular)
     if cellular != instance.cellular:
@@ -49,6 +60,9 @@ def validate_cellular(instance, validated_data):
             raise serializers.ValidationError(error)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# validate gender
+# ----------------------------------------------------------------------------------------------------------------------
 def validate_gender(instance, validated_data):
     gender = validated_data.get('gender', instance.gender).upper()
     if gender != instance.gender:

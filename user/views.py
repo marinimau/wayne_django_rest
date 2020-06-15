@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
-from rest_framework import generics, mixins
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
@@ -11,6 +11,8 @@ from .models import Profile
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
 from .serializers import UserSerializer, ProfileSerializer
 from rest_framework import permissions
+from .tokens import account_activation_token
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #   Generic User views
@@ -22,9 +24,6 @@ from rest_framework import permissions
 #       - if PUT:   update user detail
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
-from .tokens import account_activation_token
-from .utils import get_client_ip
-
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all().order_by('date_joined')
