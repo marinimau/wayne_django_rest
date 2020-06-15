@@ -189,7 +189,7 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
             'password': 'Prova123.',
             'password2': 'Prova123'
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, content_type='application/json', format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['message'], 'password mismatch')
         self.assertEqual(User.objects.count(), users_count)
@@ -208,7 +208,7 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
             'password': 'Prova123',
             'password2': 'Prova123'
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, content_type='application/json', format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['message'], 'input error')
         self.assertEqual(User.objects.count(), users_count)
@@ -227,7 +227,7 @@ class UserTestAcceptance(TestCase, URLPatternsTestCase):
             'password': 'Prova123',
             'password2': 'Prova123'
         }
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, content_type='application/json', format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['message'], 'input error')
         self.assertEqual(User.objects.count(), users_count)
