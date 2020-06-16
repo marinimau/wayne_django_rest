@@ -20,6 +20,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
  ▀███▀█████   ███    █▀   ▀█████▀   ▀█   ███   ██████████
 
 
+    -- Who Are Your NEighbors?
+
+
 Developed by: Mauro Marini during Covid-19 quarantine
 """
 
@@ -51,10 +54,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'user',
-    'password_recovery',
-    'client_config',
-    'social',
+    'api.user',
+    'api.password_recovery',
+    'api.client_config',
+    'api.social',
 ]
 
 MIDDLEWARE = [
@@ -157,4 +160,4 @@ STATIC_URL = '/static/'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Quality email: https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "api/../sent_emails")
