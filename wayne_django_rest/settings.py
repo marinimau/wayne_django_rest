@@ -20,9 +20,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
  ▀███▀█████   ███    █▀   ▀█████▀   ▀█   ███   ██████████
 
 
-    -- Who Are Your NEighbors?
-
-
 Developed by: Mauro Marini during Covid-19 quarantine
 """
 
