@@ -27,4 +27,4 @@ Django Rest Framework API. **The project has stopped due to lack of time.**
  
  ## License
  
- [MIT](https://www.mit.edu/~amini/LICENSE.md)
+ [MIT](https://github.com/marinimau/wayne_django_rest/blob/master/LICENSE)
