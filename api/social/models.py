@@ -35,26 +35,16 @@ class SocialLabel(models.Model):
     # Each label items has the following attributes:
     # - id: index (read_only)
     # - user: User (read_only)
-    # - privacy: {public, friends, strict, private}
     # - title: string
     # - system: bool
     # - creation_timestamp: timestamp
     # ------------------------------------------------------------------------------------------------------------------
-
-    class LabelPrivacyConfig(models.TextChoices):
-        PRIVATE = 'PRIVATE', _('PRIVATE')
-        STRICT = 'STRICT', _('STRICT')
-        FRIENDS = 'FRIENDS', _('FRIENDS')
-        PUBLIC = 'PUBLIC', _('PUBLIC')
-        PARENT = 'PARENT', _('PARENT')
 
     class Meta:
         unique_together = (('wall', 'title'),)
 
     id = models.AutoField(primary_key=True)
     wall = models.ForeignKey(SocialWall, on_delete=models.CASCADE)
-    privacy = models.CharField(null=False, max_length=10, choices=LabelPrivacyConfig.choices,
-                               default=LabelPrivacyConfig.PUBLIC)
     title = models.CharField(null=False, max_length=20)
     required = models.BooleanField(null=False, default=False)
     creation_timestamp = models.DateTimeField(null=False, default=now)
@@ -89,7 +79,7 @@ class SocialAccount(models.Model):
         PHONE = 'PHONE', _('PHONE')
 
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_account')
+    wall = models.OneToOneField(SocialWall, on_delete=models.CASCADE, related_name='social_account')
     type = models.CharField(null=False, max_length=8, choices=ContactType.choices, default=ContactType.URI)
     platform = models.CharField(null=False, max_length=30, blank=False, default='no-implementation')
     value = models.CharField(null=False, max_length=100, blank=False, default='no-implementation')
@@ -98,4 +88,4 @@ class SocialAccount(models.Model):
     creation_timestamp = models.DateTimeField(blank=False, default=now)
 
     def __str__(self):
-        return self.user.username + str(self.id)
+        return self.wall.user.username + str(self.id)
