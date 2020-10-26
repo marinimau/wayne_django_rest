@@ -1,10 +1,14 @@
-from django.shortcuts import render
+#
+#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   Created at: 26/10/2020
+#   By: mauromarini
+#   License: MIT
+#   Repository: https://github.com/marinimau/wayne_django_rest
+#   Credits: @marinimau (https://github.com/marinimau)
+#
+
 from .models import Config
-from django.contrib.auth.models import User
-from django.shortcuts import render
-from django.utils.encoding import force_text
-from django.views import View
-from rest_framework import generics, mixins
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
