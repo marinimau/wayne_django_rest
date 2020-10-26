@@ -89,6 +89,7 @@ class SocialAccount(models.Model):
         PHONE = 'PHONE', _('PHONE')
 
     id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_account')
     type = models.CharField(null=False, max_length=8, choices=ContactType.choices, default=ContactType.URI)
     platform = models.CharField(null=False, max_length=30, blank=False, default='no-implementation')
     value = models.CharField(null=False, max_length=100, blank=False, default='no-implementation')
@@ -97,4 +98,4 @@ class SocialAccount(models.Model):
     creation_timestamp = models.DateTimeField(blank=False, default=now)
 
     def __str__(self):
-        return str(self.id)
+        return self.user.username + str(self.id)
