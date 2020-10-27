@@ -12,41 +12,13 @@ from rest_framework import permissions
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   SocialWall Permissions
-#
-# ----------------------------------------------------------------------------------------------------------------------
-
-class SocialWallPermission(permissions.BasePermission):
-    """
-    Custom permission to socialWall list
-    """
-    def has_permission(self, request, view):
-        if request.method == 'GET':
-            return request.user.is_superuser
-        return False
-
-
-class SocialWallEditEditPermissions(permissions.BasePermission):
-    """
-    Custom permission to only allow owners of an object to edit it.
-    """
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return False
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-#
 #   SocialLabel Permissions
 #
 # ----------------------------------------------------------------------------------------------------------------------
 
-class SocialLabelPermission(permissions.BasePermission):
+class SocialAccountPermission(permissions.BasePermission):
     """
-    Custom permission to socialLabel list
+    Custom permission to SocialAccount list
     """
     def has_permission(self, request, view):
         if request.method == 'POST':
@@ -55,7 +27,7 @@ class SocialLabelPermission(permissions.BasePermission):
             return request.user.is_superuser
 
 
-class SocialLabelEditEditPermissions(permissions.BasePermission):
+class SocialAccountEditPermissions(permissions.BasePermission):
     """
     Custom permission to only allow owners of an object to edit it.
     """

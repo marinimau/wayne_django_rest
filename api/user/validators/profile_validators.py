@@ -15,7 +15,7 @@ from datetime import datetime
 
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#   Profile validatos
+#   Profile validators
 #       - location
 #       - bio
 #       - cellular
@@ -59,7 +59,7 @@ def validate_bio(instance, validated_data):
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_cellular(instance, validated_data):
     cellular = validated_data.get('cellular', instance.cellular)
-    if cellular != instance.cellular:
+    if cellular != instance.cellular and len(cellular) > 0:
         # if the request edit cellular field
         if re.search("^\+[0-9]{2,3} [0-9]{6,13}$", cellular):
             instance.cellular = cellular
@@ -84,10 +84,16 @@ def validate_gender(instance, validated_data):
             raise serializers.ValidationError(error)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# validate birth date
+# ----------------------------------------------------------------------------------------------------------------------
 def validate_birth_date(instance, validated_data):
     birth_date = validated_data.get('birth_date', instance.birth_date)
+    if len(birth_date) == 0:
+        error = {'message': 'invalid birth_date, You must be at least 16 years old to register.'}
+        raise serializers.ValidationError(error)
     if birth_date != instance.birth_date:
-        # if the request edit language field
+        # if the request edit birth_date field
         try:
             date_clean = datetime.strptime(birth_date, '%Y-%m-%d')
         except serializers.ValidationError:

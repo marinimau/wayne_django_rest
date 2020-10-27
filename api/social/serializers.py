@@ -9,20 +9,12 @@
 
 from django.utils import timezone
 from rest_framework import serializers
-from .models import SocialWall, SocialLabel, SocialAccount
+from .models import SocialAccount
 
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Label
 # ----------------------------------------------------------------------------------------------------------------------
-
-def get_wall(user):
-    if user is not None and SocialWall.objects.get(user=user).exist():
-        return SocialWall.objects.get(user=user)
-    else:
-        error = {'message': 'error - no social wall defined for this user'}
-        raise serializers.ValidationError(error)
-
 
 def check_if_exists_label(title, wall):
     return SocialLabel.objects.filter(title=title).filter(wall=wall).count() != 0
@@ -32,31 +24,23 @@ def validate_title(title, wall):
     return (not check_if_exists_label(title, wall)) and 3 < len(title) <= 20
 
 
-def validate_privacy(privacy):
-    return privacy in dict(SocialLabel.LabelPrivacyConfig.choices)
-
-
-class LabelSerializer(serializers.Serializer):
+class SocialAccountSerializer(serializers.Serializer):
     # ------------------------------------------------------------------------------------------------------------------
-    # LabelSerializer
-    # this is the serializer of the class label
+    # SocialAccount serializer
+    # this is the serializer of the class Social Account
     # the editable fields are:
-    # - privacy: {public, friends, strict, private}
-    # - title: string
+    # - value
     # ------------------------------------------------------------------------------------------------------------------
     def update(self, instance, validated_data):
         error = {'message': 'no update request for this model'}
         raise serializers.ValidationError(error)
 
     def create(self, validated_data):
-        title = validated_data.get('title', None)
-        user = validated_data.get('user', None)
-        wall = get_wall(user)
-        privacy = validated_data.get('privacy', None).upper()
-        validate_privacy(privacy)
-        if validate_title(title, wall) and wall is not None:
-            label_created = SocialLabel.objects.create(title=title.lower(), wall=wall,
-                                                       privacy=privacy, required=False,
+        platform = validated_data.get('platform', None)
+        user = validated_data.get('user', None).upper()
+        value = validated_data.get('value', None)
+        if validate_title(title, user) and user is not None:
+            label_created = SocialLabel.objects.create(title=title.lower(), user=user, required=False,
                                                        creation_timestamp=timezone.now())
             label_created.save()
             return label_created
