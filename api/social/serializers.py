@@ -9,65 +9,73 @@
 
 from django.utils import timezone
 from rest_framework import serializers
-from .models import SocialAccount
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-# Label
-# ----------------------------------------------------------------------------------------------------------------------
-
-def check_if_exists_label(title, wall):
-    return SocialLabel.objects.filter(title=title).filter(wall=wall).count() != 0
-
-
-def validate_title(title, wall):
-    return (not check_if_exists_label(title, wall)) and 3 < len(title) <= 20
+from .models import SocialAccountUsername, SocialAccountEmail
+import api.social.validators.social_account_generic_validator as generic_validators
+import api.social.validators.social_account_username_validator as username_account_validators
+import api.social.validators.social_account_email_validators as email_account_validators
 
 
 class SocialAccountSerializer(serializers.Serializer):
     # ------------------------------------------------------------------------------------------------------------------
-    # SocialAccount serializer
+    # SocialAccount serializer (abstract)
     # this is the serializer of the class Social Account
+    # ------------------------------------------------------------------------------------------------------------------
+    class Meta:
+        abstract = True
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        user = generic_validators.validate_user(self.context)
+        creation_timestamp = timezone.now()
+        return user, creation_timestamp
+
+    id = serializers.ReadOnlyField()
+    user = serializers.ReadOnlyField(source='user.pk')
+    required = serializers.BooleanField(read_only=True, default=False)
+    creation_timestamp = serializers.DateTimeField(read_only=True, required=False)
+
+
+class SocialAccountUsernameSerializer(SocialAccountSerializer):
+    # ------------------------------------------------------------------------------------------------------------------
+    # SocialAccountUsernameSerializer
+    # this is the serializer of the class Social Account Username
     # the editable fields are:
     # - value
     # ------------------------------------------------------------------------------------------------------------------
     def update(self, instance, validated_data):
-        error = {'message': 'no update request for this model'}
-        raise serializers.ValidationError(error)
+        username_account_validators.update_value(instance, validated_data.pop('value', instance.value))
+        return instance
 
     def create(self, validated_data):
-        platform = validated_data.get('platform', None)
-        user = validated_data.get('user', None).upper()
-        value = validated_data.get('value', None)
-        if validate_title(title, user) and user is not None:
-            label_created = SocialLabel.objects.create(title=title.lower(), user=user, required=False,
-                                                       creation_timestamp=timezone.now())
-            label_created.save()
-            return label_created
-        else:
-            error = {'message': 'error - label creation failed'}
-            raise serializers.ValidationError(error)
+        user, creation_timestamp = super().create(validated_data)
+        platform, value = username_account_validators.validate_user_account_creation(validated_data)
+        SocialAccountUsername.objects.create(user=user, creation_timestamp=creation_timestamp, platform=platform,
+                                             value=str.lower(value))
 
-    id = serializers.ReadOnlyField(read_only=True)
-    wall = serializers.ReadOnlyField(read_only=True)
-    title = serializers.CharField(max_length=20, required=True)
-    privacy = serializers.CharField(max_length=10, required=False)
-    required = serializers.ReadOnlyField(read_only=True)
+    platform = serializers.ChoiceField(max_length=50, required=True,
+                                       choices=SocialAccountUsername.UsernamePlatforms.choices)
+    value = serializers.CharField(max_length=50, required=True)
 
 
-# ----------------------------------------------------------------------------------------------------------------------
-# Wall
-# ----------------------------------------------------------------------------------------------------------------------
-
-class SocialWallSerializer(serializers.Serializer):
-
+class SocialAccountEmailSerializer(SocialAccountSerializer):
+    # ------------------------------------------------------------------------------------------------------------------
+    # SocialAccountEmailSerializer
+    # this is the serializer of the class Social Account Username
+    # the editable fields are:
+    # - value
+    # ------------------------------------------------------------------------------------------------------------------
     def update(self, instance, validated_data):
-        error = {'message': 'error - no update for this model'}
-        raise serializers.ValidationError(error)
+        email_account_validators.update_value(instance, validated_data.pop('value', instance.value))
+        return instance
 
     def create(self, validated_data):
-        error = {'message': 'error - no create for this model'}
-        raise serializers.ValidationError(error)
+        user, creation_timestamp = super().create(validated_data)
+        platform, value = email_account_validators.validate_email_account_creation(validated_data)
+        SocialAccountEmail.objects.create(user=user, creation_timestamp=creation_timestamp, platform=platform,
+                                          value=value)
 
-    user = serializers.ReadOnlyField(source='user.pk', read_only=True)
-    labels = LabelSerializer(many=True, read_only=True)
+    platform = serializers.ChoiceField(max_length=50, required=True,
+                                       choices=SocialAccountEmail.EmailProviders.choices)
+    value = serializers.CharField(max_length=50, required=True)

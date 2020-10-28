@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 class SocialAccount(models.Model):
     # ------------------------------------------------------------------------------------------------------------------
     #
-    # SocialAccount
+    # SocialAccount (abstract)
     #
     # This model store the social media contact of the users.
     #
@@ -24,23 +24,15 @@ class SocialAccount(models.Model):
     #
     # - id: index (read_only)
     # - user: User (read_only)
-    # - type: {telephone, email, url, username}
     # - required: bool
     # - creation_timestamp: timestamp
     # ------------------------------------------------------------------------------------------------------------------
 
-    class ContactType(models.TextChoices):
-        URI = 'URI', _('URI')
-        USERNAME = 'USERNAME', _('USERNAME')
-        EMAIL = 'EMAIL', _('EMAIL')
-        PHONE = 'PHONE', _('PHONE')
-
     class Meta:
-        unique_together = ['platform', 'value']
+        abstract = True
 
     id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_account')
-    type = models.CharField(null=False, max_length=8, choices=ContactType.choices, default=ContactType.URI)
     required = models.BooleanField(null=False, default=False)
     creation_timestamp = models.DateTimeField(blank=False, default=now)
 
@@ -56,7 +48,6 @@ class SocialAccountUsername(SocialAccount):
     # This model store the social media based on username.
     #
     # Each social username account has the following attributes:
-    # - type: {username}
     # - platform: dict, the social username platform
     # - value: string (must be of the given type)
     # ------------------------------------------------------------------------------------------------------------------
@@ -70,9 +61,11 @@ class SocialAccountUsername(SocialAccount):
         PAYPALL = 'PAYPAL', _('PAYPAL')
         GITHUB = 'GITHUB', _('GITHUB')
 
+    class Meta:
+        unique_together = ['platform', 'value']
+
     platform = models.CharField(null=False, max_length=40, choices=UsernamePlatforms.choices,
                                 default=UsernamePlatforms.WAYNE)
-    type = models.CharField(null=False, max_length=8, default=SocialAccount.ContactType.URI)
     value = models.CharField(null=False, max_length=20)
 
 
@@ -84,7 +77,6 @@ class SocialAccountEmail(SocialAccount):
     # This model store the email account.
     #
     # Each email account has the following attributes:
-    # - type: {username}
     # - provider: dict, the email provider
     # - value: string (must be of the given type)
     # ------------------------------------------------------------------------------------------------------------------
@@ -98,6 +90,5 @@ class SocialAccountEmail(SocialAccount):
         LIBERO = 'LIBERO', _('LIBERO')
         TISCALI = 'TISCALI', _('TISCALI')
 
-    provider = models.CharField(null=False, max_length=40, choices=EmailProviders.choices)
-    type = models.CharField(null=False, max_length=8, default=SocialAccount.ContactType.EMAIL)
-    value = models.EmailField(null=False)
+    platform = models.CharField(null=False, max_length=40, choices=EmailProviders.choices)
+    value = models.EmailField(null=False, unique=True)

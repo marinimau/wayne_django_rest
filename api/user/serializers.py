@@ -12,7 +12,6 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from api.user.models import Profile
 from api.client_config.models import Config
-from api.social.models import SocialAccount
 from .validators import profile_validators, user_validators
 from api.user.utils import send_confirm_registration_email
 
@@ -116,6 +115,3 @@ class ProfileSerializer(serializers.Serializer):
     gender = serializers.CharField(max_length=1, allow_blank=True, required=False)
     birth_date = serializers.CharField(allow_blank=True, required=False)
     email_confirmed = serializers.BooleanField(required=False, read_only=True)
-
-
-
