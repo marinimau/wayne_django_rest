@@ -29,7 +29,7 @@ from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSeri
 class UsernameSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountUsername.objects.all()
     serializer_class = SocialAccountUsernameSerializer
-    permission_classes = SocialAccountPermission
+    permission_classes = [SocialAccountPermission]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -38,7 +38,7 @@ class UsernameSocialAccountList(generics.ListCreateAPIView):
 class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialAccountUsername.objects.all()
     serializer_class = SocialAccountUsernameSerializer
-    permission_classes = SocialAccountEditPermissions
+    permission_classes = [SocialAccountEditPermissions]
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
 class EmailSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
-    permission_classes = SocialAccountPermission
+    permission_classes = [SocialAccountPermission]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -63,7 +63,7 @@ class EmailSocialAccountList(generics.ListCreateAPIView):
 class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
-    permission_classes = SocialAccountEditPermissions
+    permission_classes = [SocialAccountEditPermissions]
 
 
 @api_view()
