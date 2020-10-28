@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 from .models import SocialAccountUsername, SocialAccountEmail
-from .permissions import SocialAccountEditPermissions, SocialAccountPermission
+from .permissions import SocialAccountListPermission, SocialAccountItemPermissions
 from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSerializer
 
 
@@ -29,7 +29,7 @@ from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSeri
 class UsernameSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountUsername.objects.all()
     serializer_class = SocialAccountUsernameSerializer
-    permission_classes = [SocialAccountPermission]
+    permission_classes = [SocialAccountListPermission]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -38,7 +38,7 @@ class UsernameSocialAccountList(generics.ListCreateAPIView):
 class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialAccountUsername.objects.all()
     serializer_class = SocialAccountUsernameSerializer
-    permission_classes = [SocialAccountEditPermissions]
+    permission_classes = [SocialAccountItemPermissions]
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
 class EmailSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
-    permission_classes = [SocialAccountPermission]
+    permission_classes = [SocialAccountListPermission]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -63,8 +63,14 @@ class EmailSocialAccountList(generics.ListCreateAPIView):
 class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
-    permission_classes = [SocialAccountEditPermissions]
+    permission_classes = [SocialAccountItemPermissions]
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   404 error
+#
+# ----------------------------------------------------------------------------------------------------------------------
 
 @api_view()
 def error_page(request):

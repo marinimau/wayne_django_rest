@@ -16,7 +16,7 @@ from rest_framework import permissions
 #
 # ----------------------------------------------------------------------------------------------------------------------
 
-class SocialAccountPermission(permissions.BasePermission):
+class SocialAccountListPermission(permissions.BasePermission):
     """
     Custom permission to SocialAccount list
     """
@@ -27,7 +27,7 @@ class SocialAccountPermission(permissions.BasePermission):
             return request.user.is_superuser
 
 
-class SocialAccountEditPermissions(permissions.BasePermission):
+class SocialAccountItemPermissions(permissions.BasePermission):
     """
     Custom permission to only allow owners of an object to edit it.
     """
