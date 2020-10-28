@@ -7,59 +7,64 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-
-from .models import SocialAccount
+from .models import SocialAccountUsername, SocialAccountEmail
 from .permissions import SocialAccountEditPermissions, SocialAccountPermission
-from .serializers import SocialWallSerializer, LabelSerializer
+from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSerializer
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#   Generic Label views
-#   -   label_list
+#   UsernameSocialAccount views
+#   -   username_social_accounts_list
 #       - if GET:   list all labels object of a given user
 #       - if POST:  add new label
-#   -   label_detail:
-#       - if GET:   show label detail
-#       - if PUT:   update label detail
-#       - if DELETE: delete label (if system == False)
+#   -   username_social_accounts_detail:
+#       - if GET:   show user detail
+#       - if PUT:   update user detail
+#       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
-
-class LabelList(generics.ListCreateAPIView):
-    queryset = SocialLabel.objects.all().order_by('title')
-    serializer_class = LabelSerializer
-    permission_classes = [SocialLabelPermission]
+class UsernameSocialAccountList(generics.ListCreateAPIView):
+    queryset = SocialAccountUsername.objects.all()
+    serializer_class = SocialAccountUsernameSerializer
+    permission_classes = SocialAccountPermission
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
-class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SocialLabel.objects.all()
-    serializer_class = LabelSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, SocialLabelEditEditPermissions]
+class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SocialAccountUsername.objects.all()
+    serializer_class = SocialAccountUsernameSerializer
+    permission_classes = SocialAccountEditPermissions
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-#   Generic SocialAccount views
-#   -   social_accounts_list
+#   EmailSocialAccount views
+#   -   email_social_accounts_list
 #       - if GET:   list all labels object of a given user
 #       - if POST:  add new label
-#   -   social_accounts_detail:
+#   -   email_social_accounts_detail:
 #       - if GET:   show user detail
 #       - if PUT:   update user detail
 #       - if DELETE: delete user
 # ----------------------------------------------------------------------------------------------------------------------
+class EmailSocialAccountList(generics.ListCreateAPIView):
+    queryset = SocialAccountEmail.objects.all()
+    serializer_class = SocialAccountEmailSerializer
+    permission_classes = SocialAccountPermission
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-# ----------------------------------------------------------------------------------------------------------------------
-#
-#   404 error
-#
-# ----------------------------------------------------------------------------------------------------------------------
+class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SocialAccountEmail.objects.all()
+    serializer_class = SocialAccountEmailSerializer
+    permission_classes = SocialAccountEditPermissions
+
 
 @api_view()
 def error_page(request):

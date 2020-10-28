@@ -9,15 +9,20 @@
 
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from . import views
+import api.social.views as views
 
 urlpatterns = [
 
     # ------------------------------------------------------------------------------------------------------------------
-    #   social labels of given user
+    #   social account based on username
     # ------------------------------------------------------------------------------------------------------------------
-    path('labels/', views.LabelList.as_view()),
-    path('labels/<int:pk>', views.LabelDetail.as_view()),
+    path('social_accounts/username_based/', views.UsernameSocialAccountList.as_view()),
+    path('social_accounts/username_based/<int:pk>', views.UsernameSocialAccountDetail.as_view()),
+    # ------------------------------------------------------------------------------------------------------------------
+    #   social account based on email
+    # ------------------------------------------------------------------------------------------------------------------
+    path('social_accounts/email_based/', views.EmailSocialAccountList.as_view()),
+    path('social_accounts/email_based/<int:pk>', views.EmailSocialAccountDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

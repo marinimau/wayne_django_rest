@@ -32,7 +32,7 @@ class SocialAccount(models.Model):
         abstract = True
 
     id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='social_account')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     required = models.BooleanField(null=False, default=False)
     creation_timestamp = models.DateTimeField(blank=False, default=now)
 

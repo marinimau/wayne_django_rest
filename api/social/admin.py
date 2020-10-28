@@ -10,6 +10,5 @@
 from django.contrib import admin
 from .models import SocialAccount, SocialAccountUsername, SocialAccountEmail
 
-admin.site.register(SocialAccount)
 admin.site.register(SocialAccountUsername)
 admin.site.register(SocialAccountEmail)
