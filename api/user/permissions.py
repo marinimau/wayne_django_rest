@@ -21,7 +21,7 @@ class UserListPermissions(permissions.BasePermission):
     Custom permission to user_list
     """
     def has_permission(self, request, view):
-        return request.user.is_superuser or request.method == 'POST'
+        return request.user.is_superuser or (request.method == 'POST' and request.user is None)
 
 
 class UserEditPermissions(permissions.BasePermission):

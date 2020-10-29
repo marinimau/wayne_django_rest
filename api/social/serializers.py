@@ -46,6 +46,7 @@ class SocialAccountUsernameSerializer(SocialAccountSerializer):
     # ------------------------------------------------------------------------------------------------------------------
     def update(self, instance, validated_data):
         username_account_validators.update_value(instance, validated_data.pop('value', instance.value))
+        instance.save()
         return instance
 
     def create(self, validated_data):
@@ -68,6 +69,7 @@ class SocialAccountEmailSerializer(SocialAccountSerializer):
     # ------------------------------------------------------------------------------------------------------------------
     def update(self, instance, validated_data):
         email_account_validators.update_value(instance, validated_data.pop('value', instance.value))
+        instance.save()
         return instance
 
     def create(self, validated_data):

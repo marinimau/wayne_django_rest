@@ -31,9 +31,6 @@ class UsernameSocialAccountList(generics.ListCreateAPIView):
     serializer_class = SocialAccountUsernameSerializer
     permission_classes = [SocialAccountListPermission]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
 
 class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialAccountUsername.objects.all()
@@ -55,9 +52,6 @@ class EmailSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
     permission_classes = [SocialAccountListPermission]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 
 class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
