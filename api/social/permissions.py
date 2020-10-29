@@ -22,9 +22,9 @@ class SocialAccountListPermission(permissions.BasePermission):
     """
     def has_permission(self, request, view):
         if request.method == 'POST':
-            return request.user is not None
+            return permissions.IsAuthenticated
         else:
-            return request.user.is_superuser
+            return permissions.IsAdminUser
 
 
 class SocialAccountItemPermissions(permissions.BasePermission):

@@ -37,7 +37,7 @@ def validate_email_account(platform, value):
 #   validate provider
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_platform(platform):
-    if platform not in SocialAccountEmail.EmailProviders.choices:
+    if platform not in SocialAccountEmail.EmailProviders:
         error = {'message': 'invalid email provider'}
         raise serializers.ValidationError(error)
 
@@ -46,11 +46,11 @@ def validate_platform(platform):
 #   validate value
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_value(value):
-    error = {'message': 'invalid username'}
     try:
         validate_email(value)
-    except serializers.ValidationError(error) as e:
-        raise e
+    except Exception:
+        error = {'message': 'invalid email'}
+        raise serializers.ValidationError(error)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -16,13 +16,13 @@ urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
     #   social account based on username
     # ------------------------------------------------------------------------------------------------------------------
-    path('social_accounts/username_based/', views.UsernameSocialAccountList.as_view()),
-    path('social_accounts/username_based/<int:pk>', views.UsernameSocialAccountDetail.as_view()),
+    path('username_based/', views.UsernameSocialAccountList.as_view()),
+    path('username_based/<int:pk>', views.UsernameSocialAccountDetail.as_view()),
     # ------------------------------------------------------------------------------------------------------------------
     #   social account based on email
     # ------------------------------------------------------------------------------------------------------------------
-    path('social_accounts/email_based/', views.EmailSocialAccountList.as_view()),
-    path('social_accounts/email_based/<int:pk>', views.EmailSocialAccountDetail.as_view()),
+    path('email_based/', views.EmailSocialAccountList.as_view()),
+    path('email_based/<int:pk>', views.EmailSocialAccountDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -51,8 +51,8 @@ class SocialAccountUsernameSerializer(SocialAccountSerializer):
     def create(self, validated_data):
         user, creation_timestamp = super().create(validated_data)
         platform, value = username_account_validators.validate_user_account_creation(validated_data)
-        SocialAccountUsername.objects.create(user=user, creation_timestamp=creation_timestamp, platform=platform,
-                                             value=str.lower(value))
+        return SocialAccountUsername.objects.create(user=user, creation_timestamp=creation_timestamp, platform=platform,
+                                                    value=str.lower(value))
 
     platform = serializers.ChoiceField(required=True,
                                        choices=SocialAccountUsername.UsernamePlatforms.choices)
@@ -73,8 +73,8 @@ class SocialAccountEmailSerializer(SocialAccountSerializer):
     def create(self, validated_data):
         user, creation_timestamp = super().create(validated_data)
         platform, value = email_account_validators.validate_email_account_creation(validated_data)
-        SocialAccountEmail.objects.create(user=user, creation_timestamp=creation_timestamp, platform=platform,
-                                          value=value)
+        return SocialAccountEmail.objects.create(user=user, creation_timestamp=creation_timestamp, platform=platform,
+                                                 value=value)
 
     platform = serializers.ChoiceField(required=True,
                                        choices=SocialAccountEmail.EmailProviders.choices)

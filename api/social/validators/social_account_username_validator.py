@@ -37,7 +37,7 @@ def validate_user_account(platform, value):
 #   validate platform
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_platform(platform):
-    if platform not in SocialAccountUsername.UsernamePlatforms.choices:
+    if not (platform in SocialAccountUsername.UsernamePlatforms):
         error = {'message': 'invalid username platfom'}
         raise serializers.ValidationError(error)
 

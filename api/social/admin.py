@@ -8,7 +8,7 @@
 #
 
 from django.contrib import admin
-from .models import SocialAccount, SocialAccountUsername, SocialAccountEmail
+from .models import SocialAccountUsername, SocialAccountEmail
 
 admin.site.register(SocialAccountUsername)
 admin.site.register(SocialAccountEmail)
