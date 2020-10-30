@@ -8,6 +8,7 @@
 #
 
 from rest_framework import generics
+from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
@@ -29,7 +30,7 @@ from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSeri
 class UsernameSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountUsername.objects.all()
     serializer_class = SocialAccountUsernameSerializer
-    permission_classes = [SocialAccountListPermission]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -51,7 +52,7 @@ class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
 class EmailSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
-    permission_classes = [SocialAccountListPermission]
+    permission_classes = [permissions.IsAuthenticated, SocialAccountListPermission]
 
 
 class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
