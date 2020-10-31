@@ -21,9 +21,9 @@ class SocialAccountListPermission(permissions.BasePermission):
     Custom permission to SocialAccount list
     """
     def has_permission(self, request, view):
-        if request.method != 'GET':
-            return True
-        return request.user.is_superuser
+        if request.method == 'GET':
+            return request.user.is_superuser
+        return request.user is not None
 
 
 class SocialAccountItemPermissions(permissions.BasePermission):

@@ -30,7 +30,7 @@ from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSeri
 class UsernameSocialAccountList(generics.ListCreateAPIView):
     queryset = SocialAccountUsername.objects.all()
     serializer_class = SocialAccountUsernameSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, SocialAccountListPermission]
 
 
 class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -66,7 +66,6 @@ class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
 #   404 error
 #
 # ----------------------------------------------------------------------------------------------------------------------
-
 @api_view()
 def error_page(request):
     return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
