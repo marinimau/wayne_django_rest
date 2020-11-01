@@ -12,6 +12,7 @@ from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
+from api.user.models import User
 from .models import SocialAccountUsername, SocialAccountEmail
 from .permissions import SocialAccountListPermission, SocialAccountItemPermissions
 from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSerializer
@@ -39,6 +40,24 @@ class UsernameSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [SocialAccountItemPermissions]
 
 
+class UsernameSocialAccountPublic(generics.ListAPIView):
+    serializer_class = SocialAccountUsernameSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'user'
+
+    def get_queryset(self):
+        """
+        Restricts the returned accounts related to a given Wayne user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        username = self.kwargs['username']
+        exists = User.objects.filter(username=username).exists()
+        if exists:
+            return SocialAccountUsername.objects.filter(user=User.objects.get(username=username))
+        else:
+            return []
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 #   EmailSocialAccount views
 #   -   email_social_accounts_list
@@ -59,6 +78,24 @@ class EmailSocialAccountDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SocialAccountEmail.objects.all()
     serializer_class = SocialAccountEmailSerializer
     permission_classes = [SocialAccountItemPermissions]
+
+
+class EmailSocialAccountPublic(generics.ListAPIView):
+    serializer_class = SocialAccountEmailSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'user'
+
+    def get_queryset(self):
+        """
+        Restricts the returned accounts related to a given Wayne user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        username = self.kwargs['username']
+        exists = User.objects.filter(username=username).exists()
+        if exists:
+            return SocialAccountEmail.objects.filter(user=User.objects.get(username=username))
+        else:
+            return []
 
 
 # ----------------------------------------------------------------------------------------------------------------------
