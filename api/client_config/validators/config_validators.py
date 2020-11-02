@@ -25,10 +25,10 @@ from ..models import Config
 # ----------------------------------------------------------------------------------------------------------------------
 
 def validate_country(instance, validated_data):
-    country = validated_data.get('country', instance.country).upper()
+    country = validated_data.get('country', instance.country)
     if country != instance.country:
         # if the request edit language field
-        if country in dict(Config.Country.choices):
+        if country in Config.Country:
             instance.country = country
             return
         else:
@@ -37,10 +37,10 @@ def validate_country(instance, validated_data):
 
 
 def validate_language(instance, validated_data):
-    language = validated_data.get('language', instance.language).upper()
+    language = validated_data.get('language', instance.language)
     if language != instance.language:
         # if the request edit language field
-        if language in dict(Config.Language.choices):
+        if language in Config.Language:
             instance.language = language
             return
         else:
@@ -49,10 +49,10 @@ def validate_language(instance, validated_data):
 
 
 def validate_ui_pref(instance, validated_data):
-    ui_pref = validated_data.get('ui_pref', instance.ui_pref).upper()
+    ui_pref = validated_data.get('ui_pref', instance.ui_pref)
     if ui_pref != instance.ui_pref:
         # if the request edit language field
-        if ui_pref in dict(Config.UIMode.choices):
+        if ui_pref in Config.UIMode:
             instance.ui_pref = ui_pref
             return
         else:

@@ -9,6 +9,7 @@
 
 from rest_framework import serializers
 
+from .models import Config
 from .validators.config_validators import validate_country, validate_language, validate_ui_pref
 
 
@@ -38,6 +39,6 @@ class ConfigSerializer(serializers.Serializer):
         raise serializers.ValidationError(error)
 
     user = serializers.ReadOnlyField(source='user.pk')
-    country = serializers.CharField(max_length=2, allow_blank=True, required=False)
-    language = serializers.CharField(max_length=2, allow_blank=True, required=False)
-    ui_pref = serializers.CharField(allow_blank=True, required=False)
+    country = serializers.ChoiceField(choices=Config.Country.choices, default=Config.Country.IT)
+    language = serializers.ChoiceField(choices=Config.Language.choices, default=Config.Language.EN)
+    ui_pref = serializers.ChoiceField(choices=Config.UIMode.choices, default=Config.UIMode.A)

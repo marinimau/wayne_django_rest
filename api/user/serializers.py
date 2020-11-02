@@ -113,6 +113,6 @@ class ProfileSerializer(serializers.Serializer):
     bio = serializers.CharField(max_length=500, allow_blank=True, required=False)
     location = serializers.CharField(max_length=200, allow_blank=True, required=False)
     cellular = serializers.CharField(max_length=50, allow_blank=True, required=False)
-    gender = serializers.CharField(max_length=1, allow_blank=True, required=False)
+    gender = serializers.ChoiceField(choices=Profile.Gender.choices, default=Profile.Gender.UNSPECIFIED)
     birth_date = serializers.CharField(allow_blank=True, required=False)
-    email_confirmed = serializers.BooleanField(required=False, read_only=True)
+    email_confirmed = serializers.BooleanField(default=False, read_only=True)

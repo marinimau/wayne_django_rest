@@ -75,10 +75,10 @@ def validate_cellular(instance, validated_data):
 # validate gender
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_gender(instance, validated_data):
-    gender = validated_data.get('gender', instance.gender).upper()
+    gender = validated_data.get('gender', instance.gender)
     if gender != instance.gender:
         # if the request edit gender field
-        if gender in dict(Profile.Gender.choices):
+        if gender in Profile.Gender:
             instance.gender = gender
             return
         else:
