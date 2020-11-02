@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -10,6 +10,7 @@
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+
 from api.user.tokens import account_activation_token
 
 

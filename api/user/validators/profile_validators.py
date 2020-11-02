@@ -7,10 +7,12 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
-from ..models import Profile
-from rest_framework import serializers
 import re
 from datetime import datetime
+
+from rest_framework import serializers
+
+from ..models import Profile
 
 
 # ----------------------------------------------------------------------------------------------------------------------

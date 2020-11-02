@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -8,7 +8,9 @@
 #
 
 from rest_framework import serializers
+
 from .validators.config_validators import validate_country, validate_language, validate_ui_pref
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #

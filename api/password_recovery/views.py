@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -15,7 +15,7 @@ from rest_framework.status import HTTP_404_NOT_FOUND
 from api.user.utils import get_client_ip
 from .models import ResetPasswordToken
 from .permissions import ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
-from .serializers import  ResetPasswordTokenSerializer, AlterPasswordByTokenSerializer
+from .serializers import ResetPasswordTokenSerializer, AlterPasswordByTokenSerializer
 
 
 # ----------------------------------------------------------------------------------------------------------------------

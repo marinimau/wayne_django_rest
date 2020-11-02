@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -7,14 +7,15 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
+from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
-from django.contrib.auth.models import User
+
+from api.user.utils import send_reset_password_email, send_reset_password__confirm_email
+from api.user.validators import user_validators
 from .models import ResetPasswordToken
 from .tokens import password_reset_token
 from .validators import change_password_validator
-from api.user.validators import user_validators
-from api.user.utils import send_reset_password_email, send_reset_password__confirm_email
 
 
 # ----------------------------------------------------------------------------------------------------------------------

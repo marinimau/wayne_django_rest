@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -13,13 +13,14 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views import View
 from rest_framework import generics
+from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
+
 from .models import Profile
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
 from .serializers import UserSerializer, ProfileSerializer
-from rest_framework import permissions
 from .tokens import account_activation_token
 
 

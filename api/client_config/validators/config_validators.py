@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -7,8 +7,10 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
-from ..models import Config
 from rest_framework import serializers
+
+from ..models import Config
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 #

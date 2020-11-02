@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -9,10 +9,11 @@
 
 from django.utils import timezone
 from rest_framework import serializers
-from .models import SocialAccountUsername, SocialAccountEmail
+
+import api.social.validators.social_account_email_validators as email_account_validators
 import api.social.validators.social_account_generic_validator as generic_validators
 import api.social.validators.social_account_username_validator as username_account_validators
-import api.social.validators.social_account_email_validators as email_account_validators
+from .models import SocialAccountUsername, SocialAccountEmail
 
 
 class SocialAccountSerializer(serializers.Serializer):

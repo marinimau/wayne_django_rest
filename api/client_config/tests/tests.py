@@ -7,6 +7,4 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
-from django.test import TestCase
-
 # Create your tests here.

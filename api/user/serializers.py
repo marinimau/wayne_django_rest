@@ -1,5 +1,5 @@
 #
-#   wayne_django_rest copyright © 2020 - all diricts reserved
+#   wayne_django_rest copyright © 2020 - all rights reserved
 #   Created at: 26/10/2020
 #   By: mauromarini
 #   License: MIT
@@ -7,13 +7,14 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
+from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from api.user.models import Profile
+
 from api.client_config.models import Config
-from .validators import profile_validators, user_validators
+from api.user.models import Profile
 from api.user.utils import send_confirm_registration_email
+from .validators import profile_validators, user_validators
 
 
 # ----------------------------------------------------------------------------------------------------------------------
