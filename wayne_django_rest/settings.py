@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'api.password_recovery',
     'api.client_config',
     'api.social',
+    'api.public'
 ]
 
 MIDDLEWARE = [
