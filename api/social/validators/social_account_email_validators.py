@@ -29,7 +29,7 @@ def validate_email_account_creation(validated_data):
 def validate_email_account(platform, value):
     validate_platform(platform)
     validate_value(value)
-    if SocialAccountEmail.objects.filter(value=value).count() > 0:
+    if SocialAccountEmail.objects.filter(value=value).exists():
         error = {'message': 'this account already exists'}
         raise serializers.ValidationError(error)
 

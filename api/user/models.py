@@ -24,6 +24,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    url_img_profile = models.URLField(null=True)
     cellular = models.CharField(null=True, max_length=40, blank=True)
     gender = models.CharField(null=False, max_length=1, choices=Gender.choices, default=Gender.UNSPECIFIED)
     email_confirmed = models.BooleanField(default=False)

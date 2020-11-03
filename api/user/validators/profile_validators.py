@@ -9,9 +9,8 @@
 
 import re
 from datetime import datetime
-
+from django.core.validators import URLValidator
 from rest_framework import serializers
-
 from ..models import Profile
 
 
@@ -32,7 +31,7 @@ from ..models import Profile
 def validate_location(instance, validated_data):
     location = validated_data.get('location', instance.location)
     if location != instance.location:
-        # if the request edit cellular field
+        # if the request edit location field
         if len(location) <= 20:
             instance.location = location
             return
@@ -69,6 +68,21 @@ def validate_cellular(instance, validated_data):
         else:
             error = {'message': 'invalid cellular number format'}
             raise serializers.ValidationError(error)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# validate profile img
+# ----------------------------------------------------------------------------------------------------------------------
+def validate_profile_img(instance, validated_data):
+    url_img_profile = validated_data.get('url_img_profile', instance.url_img_profile)
+    if len(url_img_profile) > 0 and url_img_profile != instance.url_img_profile:
+        validate = URLValidator()
+        try:
+            validate(url_img_profile)
+        except Exception:
+            error = {'message': 'invalid url for profile img'}
+            raise serializers.ValidationError(error)
+        instance.url_img_profile = url_img_profile
 
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -97,6 +97,8 @@ class ProfileSerializer(serializers.Serializer):
         profile_validators.validate_location(instance, validated_data)
         # validate cellular
         profile_validators.validate_cellular(instance, validated_data)
+        # validate profile img
+        profile_validators.validate_profile_img(instance, validated_data)
         # validate gender
         profile_validators.validate_gender(instance, validated_data)
         # validate birth_date
@@ -115,4 +117,5 @@ class ProfileSerializer(serializers.Serializer):
     cellular = serializers.CharField(max_length=50, allow_blank=True, required=False)
     gender = serializers.ChoiceField(choices=Profile.Gender.choices, default=Profile.Gender.UNSPECIFIED)
     birth_date = serializers.CharField(allow_blank=True, required=False)
+    url_img_profile = serializers.URLField(allow_blank=True, required=False)
     email_confirmed = serializers.BooleanField(default=False, read_only=True)
