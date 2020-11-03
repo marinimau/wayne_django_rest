@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
+from api.user import views as user_views
+from api.social import views as social_views
 
 urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
@@ -40,7 +42,14 @@ urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
     path('api/v1/config/', include('api.client_config.urls')),
     # ------------------------------------------------------------------------------------------------------------------
-    #   social urls urls
+    #   social urls
     # ------------------------------------------------------------------------------------------------------------------
     path('api/v1/social/', include('api.social.urls')),
+    # ------------------------------------------------------------------------------------------------------------------
+    #   public urls
+    # ------------------------------------------------------------------------------------------------------------------
+    path('api/v1/public/<username>/', user_views.UserDetailPublic.as_view()),
+    path('api/v1/public/<username>/detail/', user_views.ProfileDetailPublic.as_view()),
+    path('api/v1/public/<username>/account/username_based/', social_views.UsernameSocialAccountPublic.as_view()),
+    path('api/v1/public/<username>/account/email_based/', social_views.EmailSocialAccountPublic.as_view()),
 ]

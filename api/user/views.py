@@ -112,3 +112,42 @@ class ActivateAccount(View):
 @api_view()
 def error_page(request):
     return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#
+#   public
+#
+# ----------------------------------------------------------------------------------------------------------------------
+class UserDetailPublic(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        """
+        Restricts the returned accounts related to a given Wayne user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        username = self.kwargs['username']
+        exists = User.objects.filter(username=username).exists()
+        if exists:
+            return User.objects.filter(username=username)
+        else:
+            return []
+
+
+class ProfileDetailPublic(generics.ListAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        """
+        Restricts the returned accounts related to a given Wayne user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        username = self.kwargs['username']
+        exists = User.objects.filter(username=username).exists()
+        if exists:
+            return Profile.objects.filter(user=User.objects.get(username=username))
+        else:
+            return []
