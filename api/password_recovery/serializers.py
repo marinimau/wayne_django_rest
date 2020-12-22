@@ -95,5 +95,5 @@ class AlterPasswordByTokenSerializer(serializers.Serializer):
 
     token = serializers.CharField(max_length=40, required=True)
     email = serializers.CharField(max_length=50, required=True)
-    password = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)
-    password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=False)
+    password = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=True)
+    password2 = serializers.CharField(style={'input_type': 'password'}, max_length=50, write_only=True, required=True)

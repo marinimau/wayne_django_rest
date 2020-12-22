@@ -75,6 +75,8 @@ def validate_cellular(instance, validated_data):
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_profile_img(instance, validated_data):
     url_img_profile = validated_data.get('url_img_profile', instance.url_img_profile)
+    if url_img_profile is instance.url_img_profile:
+        return
     if len(url_img_profile) > 0 and url_img_profile != instance.url_img_profile:
         validate = URLValidator()
         try:
