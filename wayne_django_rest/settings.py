@@ -37,7 +37,7 @@ SECRET_KEY = 'gd6zg1x2*$@@(^*m73v!u)_%n-wu%n909)hc9+qe^246^^rz4_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://ourdi.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['https://oudi.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'wayne_django_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd3s2qf39aptg19',
-        'USER': 'espfhehtmpwtes',
-        'PASSWORD': 'aa05d23cbe1a10be5a7f067c846c8915f4dccd72b666b5568bdec4257a757d94',
-        'HOST': 'ec2-52-31-233-101.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd4bcmqarvlt9c',
+        'USER': 'vecoudqupqwlht',
+        'PASSWORD': 'e71ad8350571b52f1fc1a97cd012cb5134be26540b34f311b87a427dc71d568a',
+        'HOST': 'ec2-54-75-225-52.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -153,7 +153,7 @@ STATIC_URL = '/static/'
 
 # Site url
 
-SITE_URL = 'ourdi.herokuapp.com'
+SITE_URL = 'oudi.herokuapp.com'
 
 # Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
