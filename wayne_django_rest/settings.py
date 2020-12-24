@@ -37,7 +37,7 @@ SECRET_KEY = 'gd6zg1x2*$@@(^*m73v!u)_%n-wu%n909)hc9+qe^246^^rz4_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://oudi.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -154,7 +154,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
 
 # Site url
 
-SITE_URL = 'oudi.herokuapp.com'
+SITE_URL = 'https://oudi.herokuapp.com'
 
 # Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
