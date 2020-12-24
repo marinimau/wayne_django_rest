@@ -15,7 +15,7 @@ from api.user.tokens import account_activation_token
 from django.conf import settings
 
 site_url = settings.SITE_URL
-sender = 'noreply@oudi.herokuapp.com'
+sender = settings.EMAIL_HOST_USER
 
 
 def get_client_ip(request):
