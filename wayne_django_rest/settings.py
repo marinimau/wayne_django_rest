@@ -32,10 +32,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'k@r1lc@&+1o2v+gd(x^kwm^f*v&9)x=k1jq$z$@c9!j0j5efut'
+SECRET_KEY = 'gd6zg1x2*$@@(^*m73v!u)_%n-wu%n909)hc9+qe^246^^rz4_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['https://ourdi.herokuapp.com', '127.0.0.1']
 
@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'wayne_django_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'wayne',
-        'USER': 'mauromarini',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': 'd3s2qf39aptg19',
+        'USER': 'espfhehtmpwtes',
+        'PASSWORD': 'aa05d23cbe1a10be5a7f067c846c8915f4dccd72b666b5568bdec4257a757d94',
+        'HOST': 'ec2-52-31-233-101.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -153,7 +153,7 @@ STATIC_URL = '/static/'
 
 # Site url
 
-SITE_URL = 'https://ourdi.herokuapp.com'
+SITE_URL = 'ourdi.herokuapp.com'
 
 # Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
