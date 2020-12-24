@@ -15,6 +15,7 @@ from api.user.tokens import account_activation_token
 from django.conf import settings
 
 site_url = settings.SITE_URL
+sender = 'noreply@oudi.herokuapp.com'
 
 
 def get_client_ip(request):
@@ -28,14 +29,14 @@ def get_client_ip(request):
 
 def send_confirm_registration_email(user):
     send_mail(
-        'Ourdi - Activate Your Account',
+        'Oudi - Activate Your Account',
         render_to_string('./email_templates/account_activation_email.html', {
             'user': user,
             'domain': site_url,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
         }),
-        'from@example.com',
+        sender,
         [user.email_user],
         fail_silently=False,
     )
@@ -43,7 +44,7 @@ def send_confirm_registration_email(user):
 
 def send_reset_password_email(user, ip, user_agent, token):
     send_mail(
-        'Ourdi - Reset your password',
+        'Oudi - Reset your password',
         render_to_string('./email_templates/reset_password_email.html', {
             'user': user,
             'domain': site_url,
@@ -51,7 +52,7 @@ def send_reset_password_email(user, ip, user_agent, token):
             'user_agent': user_agent,
             'token': token,
         }),
-        'from@example.com',
+        sender,
         [user.email_user],
         fail_silently=False,
     )
@@ -59,12 +60,12 @@ def send_reset_password_email(user, ip, user_agent, token):
 
 def send_reset_password__confirm_email(user):
     send_mail(
-        'Wayne - Reset your password',
+        'Oudi - Reset your password',
         render_to_string('./email_templates/password_modified_email.html', {
             'user': user,
             'domain': site_url
         }),
-        'from@example.com',
+        sender,
         [user.email_user],
         fail_silently=False,
     )

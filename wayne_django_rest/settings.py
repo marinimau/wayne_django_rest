@@ -37,7 +37,7 @@ SECRET_KEY = 'gd6zg1x2*$@@(^*m73v!u)_%n-wu%n909)hc9+qe^246^^rz4_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['oudi.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
@@ -159,5 +159,10 @@ SITE_URL = 'https://oudi.herokuapp.com'
 # Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Quality email: https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "api/../sent_emails")
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+# MAIL_FILE_PATH = os.path.join(BASE_DIR, "api/../sent_emails")
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
+EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
+EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
+EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD', '')
