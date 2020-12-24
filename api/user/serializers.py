@@ -13,7 +13,7 @@ from rest_framework import serializers
 
 from api.client_config.models import Config
 from api.user.models import Profile
-from api.user.utils import send_confirm_registration_email
+from api.utils import send_confirm_registration_email
 from .validators import profile_validators, user_validators
 
 

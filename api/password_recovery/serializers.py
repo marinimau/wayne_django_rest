@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
 
-from api.user.utils import send_reset_password_email, send_reset_password__confirm_email
+from api.utils import send_reset_password_email, send_reset_password__confirm_email
 from api.user.validators import user_validators
 from .models import ResetPasswordToken
 from .tokens import password_reset_token

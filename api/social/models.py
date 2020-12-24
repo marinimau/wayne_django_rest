@@ -58,8 +58,10 @@ class SocialAccountUsername(SocialAccount):
         INSTAGRAM = 'INSTAGRAM', _('INSTAGRAM')
         LINKEDIN = 'LINKEDIN', _('LINKEDIN')
         TELEGRAM = 'TELEGRAM', _('TELEGRAM')
-        PAYPALL = 'PAYPAL', _('PAYPAL')
+        PAYPAL = 'PAYPAL', _('PAYPAL')
         GITHUB = 'GITHUB', _('GITHUB')
+        TWITTER = 'TWITTER', _('TWITTER')
+        WHATSAPP = 'WHATSAPP', _('WHATSAPP')
 
     class Meta:
         unique_together = ['platform', 'value']

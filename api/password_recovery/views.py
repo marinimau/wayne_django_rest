@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 
-from api.user.utils import get_client_ip
+from api.utils import get_client_ip
 from .models import ResetPasswordToken
 from .permissions import ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
 from .serializers import ResetPasswordTokenSerializer, AlterPasswordByTokenSerializer
