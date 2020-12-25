@@ -161,7 +161,6 @@ SITE_URL = 'https://oudi.herokuapp.com'
 # Quality email: https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # MAIL_FILE_PATH = os.path.join(BASE_DIR, "api/../sent_emails")
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER', '')
 EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT', '')
 EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN', '')
