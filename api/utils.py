@@ -10,11 +10,11 @@
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.core.mail import send_mail
+from django.core.mail import send_mail, send_mass_mail
 from api.user.tokens import account_activation_token
 from django.conf import settings
 
-site_url = settings.SITE_URL
+
 sender = settings.EMAIL_HOST_USER
 
 
@@ -28,17 +28,19 @@ def get_client_ip(request):
 
 
 def send_confirm_registration_email(user):
-    send_mail(
-        subject='{} - Activate Your Account'.format(settings.APP_NAME),
-        message=render_to_string('email_templates/account_activation_email.html', {
+    message = (
+        '{} - Activate Your Account'.format(settings.APP_NAME),
+        render_to_string('email_templates/account_activation_email.html', {
             'user': user,
-            'domain': site_url,
+            'domain': settings.SITE_URL,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
             'appname': settings.APP_NAME
         }),
-        from_email=sender,
-        recipient_list=[user.email],
+        sender,
+        [user.email])
+    send_mass_mail(
+        message,
         fail_silently=False,
     )
 
@@ -48,7 +50,7 @@ def send_reset_password_email(user, ip, user_agent, token):
         subject='{} - Reset your password'.format(settings.APP_NAME),
         message=render_to_string('email_templates/reset_password_email.html', {
             'user': user,
-            'domain': site_url,
+            'domain': settings.SITE_URL,
             'ip': ip,
             'user_agent': user_agent,
             'token': token,
