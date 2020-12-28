@@ -30,7 +30,7 @@ def get_client_ip(request):
 def send_confirm_registration_email(user):
     send_mail(
         subject='Oudi - Activate Your Account',
-        message=render_to_string('./email_templates/account_activation_email.html', {
+        message=render_to_string('../templates/email_templates/account_activation_email.html', {
             'user': user,
             'domain': site_url,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -45,7 +45,7 @@ def send_confirm_registration_email(user):
 def send_reset_password_email(user, ip, user_agent, token):
     send_mail(
         subject='Oudi - Reset your password',
-        message=render_to_string('./email_templates/reset_password_email.html', {
+        message=render_to_string('../templates/email_templates/reset_password_email.html', {
             'user': user,
             'domain': site_url,
             'ip': ip,
@@ -61,12 +61,10 @@ def send_reset_password_email(user, ip, user_agent, token):
 def send_reset_password__confirm_email(user):
     send_mail(
         subject='Oudi - Reset your password',
-        message='Password changed',
+        message=render_to_string('../templates/email_templates/password_modified_email.html', {
+            'user': user,
+        }),
         from_email=sender,
         recipient_list=[user.email],
         fail_silently=False,
-        html_message=render_to_string('./email_templates/password_modified_email.html', {
-            'user': user,
-            'domain': site_url
-        })
     )
