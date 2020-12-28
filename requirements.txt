@@ -13,4 +13,5 @@ django_heroku==0.3.1
 sendgrid==6.4.8
 django-herokuify==1.0rc3
 django-heroku-postgresify==0.4
+django-heroku-memcacheify==1.0.0
 
