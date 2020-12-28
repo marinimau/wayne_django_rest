@@ -72,5 +72,5 @@ def send_reset_password__confirm_email(user):
         }),
         from_email=sender,
         recipient_list=[user.email],
-        fail_silently=False,
+        fail_silently=True,
     )

@@ -86,7 +86,6 @@ class AlterPasswordByTokenSerializer(serializers.Serializer):
             # if password is update delete token
             ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
             user.save()
-            print("Success")
             send_reset_password__confirm_email(user)
             success = {'message': 'password modified'}
             return success
