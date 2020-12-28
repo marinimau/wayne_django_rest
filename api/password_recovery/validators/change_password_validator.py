@@ -29,7 +29,7 @@ def get_token_by_user(user):
 def compare_and_validate_tokens(token_obj, validated_data):
     token_get = validated_data.get('token', None)
     if token_get is not None and token_obj.token == token_get:
-        if token_obj.creation_timestamp is not None and (timezone.now() - token_obj.creation_timestamp).hour <= 1:
+        if token_obj.creation_timestamp is not None and (timezone.now() - token_obj.creation_timestamp).days <= 1:
             return True
         else:
             error = {'message': 'token expired'}

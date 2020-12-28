@@ -49,7 +49,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-MANAGERS = ADMINS
 
 # Application definition
 

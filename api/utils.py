@@ -30,13 +30,13 @@ def get_client_ip(request):
 def send_confirm_registration_email(user):
     message = (
         '{} - Activate Your Account'.format(settings.APP_NAME),
-        render_to_string('email_templates/account_activation_email.html', {
+        (render_to_string('email_templates/account_activation_email.html', {
             'user': user,
             'domain': settings.SITE_URL,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
             'appname': settings.APP_NAME
-        }),
+        })),
         sender,
         [user.email])
     print(message)
