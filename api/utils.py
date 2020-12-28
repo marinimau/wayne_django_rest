@@ -29,12 +29,13 @@ def get_client_ip(request):
 
 def send_confirm_registration_email(user):
     send_mail(
-        subject='Oudi - Activate Your Account',
-        message=render_to_string('../templates/email_templates/account_activation_email.html', {
+        subject='{} - Activate Your Account'.format(settings.APP_NAME),
+        message=render_to_string('email_templates/account_activation_email.html', {
             'user': user,
             'domain': site_url,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
+            'appname': settings.APP_NAME
         }),
         from_email=sender,
         recipient_list=[user.email],
@@ -44,13 +45,14 @@ def send_confirm_registration_email(user):
 
 def send_reset_password_email(user, ip, user_agent, token):
     send_mail(
-        subject='Oudi - Reset your password',
-        message=render_to_string('../templates/email_templates/reset_password_email.html', {
+        subject='{} - Reset your password'.format(settings.APP_NAME),
+        message=render_to_string('email_templates/reset_password_email.html', {
             'user': user,
             'domain': site_url,
             'ip': ip,
             'user_agent': user_agent,
             'token': token,
+            'appname': settings.APP_NAME
         }),
         from_email=sender,
         recipient_list=[user.email],
@@ -60,9 +62,10 @@ def send_reset_password_email(user, ip, user_agent, token):
 
 def send_reset_password__confirm_email(user):
     send_mail(
-        subject='Oudi - Reset your password',
-        message=render_to_string('../templates/email_templates/password_modified_email.html', {
+        subject='{} - Reset your password'.format(settings.APP_NAME),
+        message=render_to_string('email_templates/password_modified_email.html', {
             'user': user,
+            'appname': settings.APP_NAME
         }),
         from_email=sender,
         recipient_list=[user.email],

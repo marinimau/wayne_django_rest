@@ -24,6 +24,7 @@ Developed by: Mauro Marini during Covid-19 quarantine
 """
 
 import os
+from herokuify.mail.mailgun import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -155,16 +156,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
 # Site url
 
 SITE_URL = 'https://oudi.herokuapp.com'
+APP_NAME = 'Oudi'
 
 # Email Backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Quality email: https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # MAIL_FILE_PATH = os.path.join(BASE_DIR, "api/../sent_emails")
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'postmaster@sandbox1b35a319182948079f68aa208b965682.mailgun.org'
-EMAIL_HOST_PASSWORD = '145ba506414c5b6abea0c90d415d16e0-b6190e87-e62db6e7'
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
