@@ -39,6 +39,7 @@ def send_confirm_registration_email(user):
         }),
         sender,
         [user.email])
+    print(message)
     send_mass_mail(
         message,
         fail_silently=False,

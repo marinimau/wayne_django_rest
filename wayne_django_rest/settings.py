@@ -25,6 +25,7 @@ Developed by: Mauro Marini during Covid-19 quarantine
 
 import os
 from herokuify.mail.mailgun import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
+from django.utils.log import DEFAULT_LOGGING
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,6 +40,16 @@ SECRET_KEY = 'gd6zg1x2*$@@(^*m73v!u)_%n-wu%n909)hc9+qe^246^^rz4_'
 DEBUG = False
 
 ALLOWED_HOSTS = ['oudi.herokuapp.com', '127.0.0.1']
+
+# Admins
+
+ADMINS = (
+  ('Admin', 'admin@oudi.herokuapp.com'),
+)
+
+MANAGERS = ADMINS
+
+MANAGERS = ADMINS
 
 # Application definition
 
@@ -158,10 +169,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
 SITE_URL = 'https://oudi.herokuapp.com'
 APP_NAME = 'Oudi'
 
-# Email Backend
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# Quality email: https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
-# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-# MAIL_FILE_PATH = os.path.join(BASE_DIR, "api/../sent_emails")
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Default Logging
+DEFAULT_LOGGING['handlers']['console']['filters'] = []
 
