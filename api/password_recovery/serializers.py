@@ -88,7 +88,7 @@ class AlterPasswordByTokenSerializer(serializers.Serializer):
             user.save()
             send_reset_password__confirm_email(user)
             success = {'message': 'password modified'}
-            return success
+            return serializers.ReturnDict(success)
         else:
             error = {'message': 'invalid email'}
             raise serializers.ValidationError(error)
