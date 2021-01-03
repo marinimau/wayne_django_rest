@@ -24,7 +24,7 @@ Developed by: Mauro Marini during Covid-19 quarantine
 """
 
 import os
-from herokuify.mail.mailgun import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
+# from herokuify.mail.mailgun import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
 from django.utils.log import DEFAULT_LOGGING
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -171,3 +171,9 @@ APP_NAME = 'Oudi'
 # Default Logging
 DEFAULT_LOGGING['handlers']['console']['filters'] = []
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ourdigitalidentity@gmail.com'
+EMAIL_HOST_PASSWORD = 'Y4VnfXDwPRI5aj20'
+EMAIL_USE_TLS = True
