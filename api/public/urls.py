@@ -15,8 +15,11 @@ urlpatterns = [
     # ------------------------------------------------------------------------------------------------------------------
     #   public urls
     # ------------------------------------------------------------------------------------------------------------------
-    path('<username>/', user_views.UserDetailPublic.as_view()),
-    path('<username>/detail/', user_views.ProfileDetailPublic.as_view()),
-    path('<username>/account/username_based/', social_views.UsernameSocialAccountPublic.as_view()),
-    path('<username>/account/email_based/', social_views.EmailSocialAccountPublic.as_view()),
+    path('get/<username>/', user_views.UserDetailPublic.as_view()),
+    path('get/<username>/detail/', user_views.ProfileDetailPublic.as_view()),
+    path('get/<username>/account/username_based/', social_views.UsernameSocialAccountPublic.as_view()),
+    path('reverse/account/username_based/<platform>/<value>', social_views.EmailSocialAccountRetrieve.as_view()),
+    path('get/<username>/account/email_based/', social_views.EmailSocialAccountPublic.as_view()),
+    path('reverse/account/email_based/<platform>/<value>', social_views.EmailSocialAccountRetrieve.as_view()),
+
 ]

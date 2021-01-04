@@ -63,6 +63,21 @@ class UsernameSocialAccountPublic(generics.ListAPIView):
             return []
 
 
+class UsernameSocialAccountRetrieve(generics.RetrieveAPIView):
+    queryset = SocialAccountUsername.objects.all()
+    serializer_class = SocialAccountUsernameSerializer
+    lookup_fields = ('platform', 'value')
+
+    def get_queryset(self):
+        platform = self.kwargs['platform']
+        value = self.kwargs['value']
+        exists = SocialAccountUsername.objects.get(value=value, platform=platform).exists()
+        if exists:
+            return SocialAccountUsername.objects.get(value=value, platform=platform).exists()
+        else:
+            return []
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 #   EmailSocialAccount views
 #   -   email_social_accounts_list
@@ -99,6 +114,21 @@ class EmailSocialAccountPublic(generics.ListAPIView):
         exists = User.objects.filter(username=username).exists()
         if exists:
             return SocialAccountEmail.objects.filter(user=User.objects.get(username=username))
+        else:
+            return []
+
+
+class EmailSocialAccountRetrieve(generics.RetrieveAPIView):
+    queryset = SocialAccountEmail.objects.all()
+    serializer_class = SocialAccountEmailSerializer
+    lookup_fields = ('platform', 'value')
+
+    def get_queryset(self):
+        platform = self.kwargs['platform']
+        value = self.kwargs['value']
+        exists = SocialAccountEmail.objects.get(value=value, platform=platform).exists()
+        if exists:
+            return SocialAccountEmail.objects.get(value=value, platform=platform).exists()
         else:
             return []
 
