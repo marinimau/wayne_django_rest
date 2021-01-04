@@ -8,8 +8,12 @@
 #
 
 from rest_framework import serializers
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from ..models import Config
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[2])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -32,7 +36,7 @@ def validate_country(instance, validated_data):
             instance.country = country
             return
         else:
-            error = {'message': 'invalid value for country'}
+            error = {'message': messages['invalid_country_error']}
             raise serializers.ValidationError(error)
 
 
@@ -44,7 +48,7 @@ def validate_language(instance, validated_data):
             instance.language = language
             return
         else:
-            error = {'message': 'invalid value for language'}
+            error = {'message': messages['invalid_language_error']}
             raise serializers.ValidationError(error)
 
 
@@ -56,5 +60,5 @@ def validate_ui_pref(instance, validated_data):
             instance.ui_pref = ui_pref
             return
         else:
-            error = {'message': 'invalid choice for UI pref'}
+            error = {'message': messages['invalid_ui_pref_error']}
             raise serializers.ValidationError(error)

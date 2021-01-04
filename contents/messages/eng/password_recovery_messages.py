@@ -14,5 +14,5 @@ messages = {
     'update_not_allowed': 'no update for this model',
     'invalid_email_error': 'invalid email',
     'password_modified': 'password modified',
-    '404_error': 'detail not found'
+    '404_error': 'not found'
 }

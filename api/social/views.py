@@ -12,11 +12,15 @@ from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from api.user.models import User
 from .models import SocialAccountUsername, SocialAccountEmail
 from .permissions import SocialAccountListPermission, SocialAccountItemPermissions
 from .serializers import SocialAccountUsernameSerializer, SocialAccountEmailSerializer
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[3])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -106,4 +110,4 @@ class EmailSocialAccountPublic(generics.ListAPIView):
 # ----------------------------------------------------------------------------------------------------------------------
 @api_view()
 def error_page(request):
-    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
+    return Response({'detail': messages['404_error']}, status=HTTP_404_NOT_FOUND)

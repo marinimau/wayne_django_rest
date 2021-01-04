@@ -8,6 +8,10 @@
 #
 
 from rest_framework import serializers
+from contents.messages.get_messages import get_messages
+from django.conf import settings
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[3])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -18,6 +22,6 @@ def validate_user(context):
     if request and hasattr(request, "user"):
         return request.user
     else:
-        error = {'message': 'invalid value for gender'}
+        error = {'message': messages['invalid_user_error']}
         raise serializers.ValidationError(error)
 

@@ -9,8 +9,12 @@
 
 from django.core.validators import validate_email
 from rest_framework import serializers
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from api.social.models import SocialAccountEmail
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[3])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -30,7 +34,7 @@ def validate_email_account(platform, value):
     validate_platform(platform)
     validate_value(value)
     if SocialAccountEmail.objects.filter(value=value).exists():
-        error = {'message': 'this account already exists'}
+        error = {'message': messages['account_already_exists_error']}
         raise serializers.ValidationError(error)
 
 
@@ -39,7 +43,7 @@ def validate_email_account(platform, value):
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_platform(platform):
     if platform not in SocialAccountEmail.EmailProviders:
-        error = {'message': 'invalid email provider'}
+        error = {'message': messages['invalid_email_provider_error']}
         raise serializers.ValidationError(error)
 
 
@@ -50,7 +54,7 @@ def validate_value(value):
     try:
         validate_email(value)
     except Exception:
-        error = {'message': 'invalid email'}
+        error = {'message': messages['invalid_email_format_error']}
         raise serializers.ValidationError(error)
 
 

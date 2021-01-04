@@ -8,9 +8,13 @@
 #
 
 from rest_framework import serializers
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from .models import Config
 from .validators.config_validators import validate_country, validate_language, validate_ui_pref
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[2])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -35,7 +39,7 @@ class ConfigSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
-        error = {'message': 'config instance is created only with user creation'}
+        error = {'message': messages['create_not_allowed']}
         raise serializers.ValidationError(error)
 
     user = serializers.ReadOnlyField(source='user.pk')

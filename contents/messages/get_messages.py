@@ -7,10 +7,25 @@
 #   Credits: @marinimau (https://github.com/marinimau)
 #
 
+from django.conf import settings
 from .eng.client_config_messages import messages as eng_client_messages
 from .eng.password_recovery_messages import messages as eng_reset_password_messages
+from .eng.social_messages import messages as eng_social_messages
+from .eng.user_messages import messages as eng_user_messages
 
 
-def get_messages(language, package):
-    return eng_client_messages
+# ----------------------------------------------------------------------------------------------------------------------
+# get messages for the given package
+# ----------------------------------------------------------------------------------------------------------------------
+def get_messages(package='USER'):
+    package = package.upper()
+    assert package in settings.CONTENT_PACKAGES
+    if package is settings.CONTENT_PACKAGES[0]:
+        return eng_user_messages
+    elif package is settings.CONTENT_PACKAGES[1]:
+        return eng_reset_password_messages
+    elif package is settings.CONTENT_PACKAGES[2]:
+        return eng_client_messages
+    elif package is settings.CONTENT_PACKAGES[3]:
+        return eng_social_messages
 

@@ -8,9 +8,9 @@
 #
 
 messages = {
-    'invalid_country': 'invalid value for country',
-    'invalid_language': 'invalid value for language',
-    'invalid_ui_pref': 'invalid choice for UI pref',
-    'creat_not_allowed': 'config instance is created only with user creation',
+    'invalid_country_error': 'invalid value for country',
+    'invalid_language_error': 'invalid value for language',
+    'invalid_ui_pref_error': 'invalid choice for UI pref',
+    'create_not_allowed': 'config instance is created only with user creation',
     '404_error': 'detail not found'
 }

@@ -17,11 +17,15 @@ from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from .models import Profile
 from .permissions import ProfileEditPermissions, UserEditPermissions, UserListPermissions, ProfileListPermissions
 from .serializers import UserSerializer, ProfileSerializer
 from .tokens import account_activation_token
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[0])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -111,7 +115,7 @@ class ActivateAccount(View):
 
 @api_view()
 def error_page(request):
-    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
+    return Response({'detail': messages['404_error']}, status=HTTP_404_NOT_FOUND)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

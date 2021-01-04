@@ -10,11 +10,15 @@
 from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from api.client_config.models import Config
 from api.user.models import Profile
 from api.utils import send_confirm_registration_email
 from .validators import profile_validators, user_validators
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[0])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -107,7 +111,7 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
-        error = {'message': 'profile instance is created only with user creation'}
+        error = {'message': messages['no_creation_for_profile_model_error']}
         raise serializers.ValidationError(error)
 
     # user = UserSerializer()

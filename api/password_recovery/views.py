@@ -11,11 +11,15 @@ from rest_framework import generics, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from api.utils import get_client_ip
 from .models import ResetPasswordToken
 from .permissions import ResetPasswordTokenListPermissions, ResetPasswordTokenSinglePermissions
 from .serializers import ResetPasswordTokenSerializer, AlterPasswordByTokenSerializer
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[1])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -61,4 +65,4 @@ class AlterPasswordByTokenAndEmail(mixins.CreateModelMixin, generics.GenericAPIV
 
 @api_view()
 def error_page(request):
-    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
+    return Response({'detail': messages['404_error']}, status=HTTP_404_NOT_FOUND)

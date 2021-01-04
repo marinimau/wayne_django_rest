@@ -11,10 +11,13 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from .models import Config
 from .permissions import ConfigEditPermissions, ConfigListPermissions
 from .serializers import ConfigSerializer
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[2])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -52,4 +55,4 @@ class ConfigDetail(generics.RetrieveUpdateDestroyAPIView):
 
 @api_view()
 def error_page(request):
-    return Response({'detail': 'Not found'}, status=HTTP_404_NOT_FOUND)
+    return Response({'detail': messages['404_error']}, status=HTTP_404_NOT_FOUND)

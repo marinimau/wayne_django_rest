@@ -10,12 +10,16 @@
 from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from api.utils import send_reset_password_email, send_reset_password__confirm_email
 from api.user.validators import user_validators
 from .models import ResetPasswordToken
 from .tokens import password_reset_token
 from .validators import change_password_validator
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[1])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -29,7 +33,7 @@ from .validators import change_password_validator
 class ResetPasswordTokenSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
-        error = {'message': 'no update request for this model'}
+        error = {'message': messages['update_not_allowed']}
         raise serializers.ValidationError(error)
 
     def create(self, validated_data):
@@ -49,7 +53,7 @@ class ResetPasswordTokenSerializer(serializers.Serializer):
             send_reset_password_email(user, ip, user_agent, token)
             return token_created
         else:
-            error = {'message': 'invalid email'}
+            error = {'message': messages['invalid_email_error']}
             raise serializers.ValidationError(error)
 
     user = serializers.ReadOnlyField(source='user.pk')
@@ -71,7 +75,7 @@ class ResetPasswordTokenSerializer(serializers.Serializer):
 class AlterPasswordByTokenSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
-        error = {'message': 'no update request for this model'}
+        error = {'message': messages['update_not_allowed']}
         raise serializers.ValidationError(error)
 
     def create(self, validated_data):
@@ -87,10 +91,10 @@ class AlterPasswordByTokenSerializer(serializers.Serializer):
             ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
             user.save()
             send_reset_password__confirm_email(user)
-            success = {'message': 'password modified'}
+            success = {'message': messages['password_modified']}
             return serializers.ReturnDict(success)
         else:
-            error = {'message': 'invalid email'}
+            error = {'message': messages['invalid_email_error']}
             raise serializers.ValidationError(error)
 
     token = serializers.CharField(max_length=40, required=True)

@@ -11,6 +11,10 @@ import re
 
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from contents.messages.get_messages import get_messages
+from django.conf import settings
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[0])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -36,13 +40,13 @@ def check_password_strength(password):
 # ----------------------------------------------------------------------------------------------------------------------
 def check_password(password, password2):
     if password is None:
-        error = {'message': 'input error'}
+        error = {'message': messages['password_not_given_error']}
         return False, error
     elif not check_password_strength(password):
-        error = {'message': 'password insecure'}
+        error = {'message': messages['password_not_secure_error']}
         return False, error
     elif password != password2:
-        error = {'message': 'password mismatch'}
+        error = {'message': messages['password_mismatch_error']}
         return False, error
     else:
         return True, None
@@ -90,7 +94,7 @@ def update_email(instance, validated_data):
         if not check_if_exist_email(email):
             instance.email = email
         else:
-            error = {'message': 'email already used'}
+            error = {'message': messages['email_already_used_error']}
             raise serializers.ValidationError(error)
     return
 
@@ -111,7 +115,7 @@ def update_username(instance, validated_data):
         if not check_if_exist_username(username):
             instance.username = username.lower()
         else:
-            error = {'message': 'username already used'}
+            error = {'message': messages['username_already_used_error']}
             raise serializers.ValidationError(error)
     return
 
@@ -130,15 +134,15 @@ def update_name_and_surname(instance, validated_data):
 # ----------------------------------------------------------------------------------------------------------------------
 def check_input(email, username):
     if email is None or username is None:
-        error = {'message': 'input error'}
+        error = {'message': messages['email_none_error']}
         return False, error
     # check if email is already used
     elif check_if_exist_email(email):
-        error = {'message': 'email already used'}
+        error = {'message': messages['email_already_used_error']}
         return False, error
     # check if username is already used
     elif check_if_exist_username(username):
-        error = {'message': 'username already used'}
+        error = {'message': messages['username_already_used_error']}
         return False, error
     else:
         return True, None

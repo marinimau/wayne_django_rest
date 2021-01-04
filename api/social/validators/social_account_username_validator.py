@@ -10,8 +10,12 @@
 import re
 
 from rest_framework import serializers
-
+from contents.messages.get_messages import get_messages
+from django.conf import settings
 from api.social.models import SocialAccountUsername
+
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[3])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -31,7 +35,7 @@ def validate_user_account(platform, value):
     validate_platform(platform)
     validate_value(value)
     if SocialAccountUsername.objects.filter(platform=platform, value=value).count() > 0:
-        error = {'message': 'this account already exists'}
+        error = {'message': messages['account_already_exists_error']}
         raise serializers.ValidationError(error)
 
 
@@ -40,7 +44,7 @@ def validate_user_account(platform, value):
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_platform(platform):
     if not (platform in SocialAccountUsername.UsernamePlatforms):
-        error = {'message': 'invalid username platfom'}
+        error = {'message': messages['invalid_username_provider_error']}
         raise serializers.ValidationError(error)
 
 
@@ -49,7 +53,7 @@ def validate_platform(platform):
 # ----------------------------------------------------------------------------------------------------------------------
 def validate_value(value):
     if re.match("^[a-zA-Z0-9_.-]+$", value) is None:
-        error = {'message': 'invalid username'}
+        error = {'message': messages['invalid_username_error']}
         raise serializers.ValidationError(error)
 
 

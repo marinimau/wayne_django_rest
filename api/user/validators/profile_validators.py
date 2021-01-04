@@ -12,6 +12,10 @@ from datetime import datetime
 from django.core.validators import URLValidator
 from rest_framework import serializers
 from ..models import Profile
+from contents.messages.get_messages import get_messages
+from django.conf import settings
+
+messages = get_messages(package=settings.CONTENT_PACKAGES[0])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -36,7 +40,7 @@ def validate_location(instance, validated_data):
             instance.location = location
             return
         else:
-            error = {'message': 'invalid location'}
+            error = {'message': messages['invalid_location_error']}
             raise serializers.ValidationError(error)
 
 
@@ -51,7 +55,7 @@ def validate_bio(instance, validated_data):
             instance.bio = bio
             return
         else:
-            error = {'message': 'bio is too long'}
+            error = {'message': messages['too_much_digits_bio_error']}
             raise serializers.ValidationError(error)
 
 
@@ -66,7 +70,7 @@ def validate_cellular(instance, validated_data):
             instance.cellular = cellular
             return
         else:
-            error = {'message': 'invalid cellular number format'}
+            error = {'message': messages['invalid_cellular_number_format_error']}
             raise serializers.ValidationError(error)
 
 
@@ -82,7 +86,7 @@ def validate_profile_img(instance, validated_data):
         try:
             validate(url_img_profile)
         except Exception:
-            error = {'message': 'invalid url for profile img'}
+            error = {'message': messages['invalid_img_url_error']}
             raise serializers.ValidationError(error)
         instance.url_img_profile = url_img_profile
 
@@ -98,7 +102,7 @@ def validate_gender(instance, validated_data):
             instance.gender = gender
             return
         else:
-            error = {'message': 'invalid value for gender'}
+            error = {'message': messages['invalid_gender_error']}
             raise serializers.ValidationError(error)
 
 
@@ -108,19 +112,19 @@ def validate_gender(instance, validated_data):
 def validate_birth_date(instance, validated_data):
     birth_date = validated_data.get('birth_date', instance.birth_date)
     if len(birth_date) == 0:
-        error = {'message': 'invalid birth_date, You must be at least 16 years old to register.'}
+        error = {'message': messages['invalid_user_age_error']}
         raise serializers.ValidationError(error)
     if birth_date != instance.birth_date:
         # if the request edit birth_date field
         try:
             date_clean = datetime.strptime(birth_date, '%Y-%m-%d')
         except serializers.ValidationError:
-            error = {'message': 'invalid date format in birth_date'}
+            error = {messages['invalid_birth_date_format_error']}
             raise serializers.ValidationError(error)
         # if format is valid
         if date_clean is not None and (datetime.now() - date_clean).days / 365 >= 16:
             instance.birth_date = birth_date
             return
         else:
-            error = {'message': 'invalid birth_date, You must be at least 16 years old to register.'}
+            error = {'message': messages['invalid_user_age_error']}
             raise serializers.ValidationError(error)

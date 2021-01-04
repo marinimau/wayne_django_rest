@@ -68,6 +68,15 @@ INSTALLED_APPS = [
     'api.public'
 ]
 
+# [!!!] not change the order of the items of the following attribute
+
+CONTENT_PACKAGES = [
+    'USER',
+    'PASSWORD_RECOVERY',
+    'CLIENT_CONFIG',
+    'SOCIAL',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
