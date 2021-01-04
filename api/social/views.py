@@ -63,9 +63,9 @@ class UsernameSocialAccountPublic(generics.ListAPIView):
             return []
 
 
-class UsernameSocialAccountRetrieve(generics.RetrieveAPIView):
-    queryset = SocialAccountUsername.objects.all()
+class UsernameSocialAccountRetrieve(generics.ListAPIView):
     serializer_class = SocialAccountUsernameSerializer
+    permission_classes = [permissions.AllowAny]
     lookup_fields = ('platform', 'value')
 
     def get_queryset(self):
@@ -118,9 +118,9 @@ class EmailSocialAccountPublic(generics.ListAPIView):
             return []
 
 
-class EmailSocialAccountRetrieve(generics.RetrieveAPIView):
-    queryset = SocialAccountEmail.objects.all()
+class EmailSocialAccountRetrieve(generics.ListAPIView):
     serializer_class = SocialAccountEmailSerializer
+    permission_classes = [permissions.AllowAny]
     lookup_fields = ('platform', 'value')
 
     def get_queryset(self):
