@@ -9,7 +9,9 @@
 
 from django.contrib.auth.models import User
 from django.utils import timezone
-from rest_framework import serializers
+from rest_framework import serializers, status
+from rest_framework.response import Response
+
 from contents.messages.get_messages import get_messages
 from django.conf import settings
 from api.utils import send_reset_password_email, send_reset_password__confirm_email
@@ -91,8 +93,7 @@ class AlterPasswordByTokenSerializer(serializers.Serializer):
             ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
             user.save()
             send_reset_password__confirm_email(user)
-            success = {'message': messages['password_modified']}
-            return serializers.ReturnDict(success)
+            return Response({"message": messages['password_modified']}, status=status.HTTP_201_CREATED)
         else:
             error = {'message': messages['invalid_email_error']}
             raise serializers.ValidationError(error)
