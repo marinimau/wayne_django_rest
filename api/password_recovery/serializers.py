@@ -93,7 +93,7 @@ class AlterPasswordByTokenSerializer(serializers.Serializer):
             ResetPasswordToken.objects.filter(pk=token_stored.pk).delete()
             user.save()
             send_reset_password__confirm_email(user)
-            return user
+            raise Response({"message": messages['password_modified']}, status=status.HTTP_200_OK)
         else:
             error = {'message': messages['invalid_email_error']}
             raise serializers.ValidationError(error)
