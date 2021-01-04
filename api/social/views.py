@@ -71,9 +71,9 @@ class UsernameSocialAccountRetrieve(generics.ListAPIView):
     def get_queryset(self):
         platform = self.kwargs['platform']
         value = self.kwargs['value']
-        exists = SocialAccountUsername.objects.filter(value=value).exists()
+        exists = SocialAccountUsername.objects.filter(platform=platform, value=value).exists()
         if exists:
-            return SocialAccountUsername.objects.filter(value=value).exists()
+            return SocialAccountUsername.objects.filter(platform=platform, value=value)
         else:
             return []
 
@@ -128,7 +128,7 @@ class EmailSocialAccountRetrieve(generics.ListAPIView):
         value = self.kwargs['value']
         exists = SocialAccountEmail.objects.filter(value=value, platform=platform).exists()
         if exists:
-            return SocialAccountEmail.objects.filter(value=value, platform=platform).exists()
+            return SocialAccountEmail.objects.filter(value=value, platform=platform)
         else:
             return []
 
