@@ -21,11 +21,11 @@ def get_messages(package='USER'):
     package = package.upper()
     assert package in settings.CONTENT_PACKAGES
     if package is settings.CONTENT_PACKAGES[0]:
-        return eng_user_messages
+        return dict(eng_user_messages)
     elif package is settings.CONTENT_PACKAGES[1]:
-        return eng_reset_password_messages
+        return dict(eng_reset_password_messages)
     elif package is settings.CONTENT_PACKAGES[2]:
-        return eng_client_messages
+        return dict(eng_client_messages)
     elif package is settings.CONTENT_PACKAGES[3]:
-        return eng_social_messages
+        return dict(eng_social_messages)
 
