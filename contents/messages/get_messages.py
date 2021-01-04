@@ -18,7 +18,7 @@ from .eng.user_messages import messages as eng_user_messages
 # get messages for the given package
 # ----------------------------------------------------------------------------------------------------------------------
 def get_messages(package='USER'):
-    package = package.upper()
+    return dict(eng_user_messages)
     assert package in settings.CONTENT_PACKAGES
     if package is settings.CONTENT_PACKAGES[0]:
         return dict(eng_user_messages)

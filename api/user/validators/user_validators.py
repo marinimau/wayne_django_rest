@@ -89,7 +89,6 @@ def check_if_exist_email(email):
 # update email
 # ----------------------------------------------------------------------------------------------------------------------
 def update_email(instance, validated_data):
-    messages = get_messages(package=settings.CONTENT_PACKAGES[0])
     email = validated_data.get('email', instance.email)
     if email != instance.email:
         if not check_if_exist_email(email):
