@@ -34,7 +34,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gd6zg1x2*$@@(^*m73v!u)_%n-wu%n909)hc9+qe^246^^rz4_'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -117,10 +117,10 @@ WSGI_APPLICATION = 'wayne_django_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd4bcmqarvlt9c',
-        'USER': 'vecoudqupqwlht',
-        'PASSWORD': 'e71ad8350571b52f1fc1a97cd012cb5134be26540b34f311b87a427dc71d568a',
-        'HOST': 'ec2-54-75-225-52.eu-west-1.compute.amazonaws.com',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
         'PORT': '5432',
     }
 }
@@ -184,8 +184,8 @@ APP_NAME = 'Oudi'
 DEFAULT_LOGGING['handlers']['console']['filters'] = []
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-relay.sendinblue.com'
+EMAIL_HOST = ''
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'ourdigitalidentity@gmail.com'
-EMAIL_HOST_PASSWORD = 'Y4VnfXDwPRI5aj20'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
