@@ -19,20 +19,23 @@ response:
   "previous": null,
   "results": [
     {
-      "id": 3,
+      "id": {$CONTACT_INSTANCE},
       "user": {$WAYNE_ACCOUNT},
-      "required": false,
-      "creation_timestamp": "2021-01-04T13:32:38.423757Z",
-      "platform": "GMAIL",
-      "value": "email1@gmail.com"
+      "required": {$REQUIRED_ACCOUNT_FLAG},
+      "creation_timestamp": {$CREATION_TIMESTAMP},
+      "platform": {$EMAIL_PROVIDER},
+      "value": {$EMAIL_ADDRESS}
     },
+    
+    ...
+    
     {
-      "id": 4,
-      "user": 25,
-      "required": false,
+      "id": {$CONTACT_INSTANCE},
+      "user": {$WAYNE_ACCOUNT},
+      "required": {$REQUIRED_ACCOUNT_FLAG},
       "creation_timestamp": "2021-01-04T14:58:24.457715Z",
-      "platform": "GMAIL",
-      "value": "email2@gmail.com"
+      "platform": {$EMAIL_PROVIDER},
+      "value": {$EMAIL_ADDRESS}
     }
   ]
 }
@@ -52,12 +55,23 @@ response:
   "previous": null,
   "results": [
     {
-      "id": 1,
+      "id": {$CONTACT_INSTANCE},
       "user": {$WAYNE_ACCOUNT},
-      "required": false,
-      "creation_timestamp": "2021-01-04T14:26:30.866510Z",
-      "platform": "FACEBOOK",
-      "value": "facebook_username"
+      "required": {$REQUIRED_ACCOUNT_FLAG},
+      "creation_timestamp": {$CREATION_TIMESTAMP},
+      "platform": "{$USERNAME_IN_THE_PLATFORM}",
+      "value": "{$USERNAME_IN_THE_PLATFORM}"
+    },
+    
+    ...
+     
+    {
+      "id": {$CONTACT_INSTANCE},
+      "user": {$WAYNE_ACCOUNT},
+      "required": {$REQUIRED_ACCOUNT_FLAG},
+      "creation_timestamp": {$CREATION_TIMESTAMP},
+      "platform": "{$USERNAME_IN_THE_PLATFORM}",
+      "value": "{$USERNAME_IN_THE_PLATFORM}"
     }
   ]
 }
@@ -78,17 +92,18 @@ response:
   "results": [
     {
       "user": {$WAYNE_ACCOUNT},
-      "bio": "user bio",
-      "location": "Cagliari",
-      "cellular": null,
-      "gender": "U",
-      "birth_date": 1997-04-24,
-      "url_img_profile": null,
-      "email_confirmed": true
+      "bio": {$USER_BIO},
+      "location": {$USER_LOCATION},
+      "cellular": {$USER_CELLULAR},
+      "gender": {$USER_GENDER},  // M, F or U
+      "birth_date": {$USER_BIRTH_DATE},  // YYYY-MM-DD
+      "url_img_profile": {$URL_IMG_PROFILE},
+      "email_confirmed": {$EMAIL_CONFIRMED_FLAG}
     }
   ]
 }
 ```
+
 
 
 ##### Reverse lookup by email (find user ID and username of the owner of a given email):
@@ -104,10 +119,10 @@ response:
   "previous": null,
   "results": [
     {
-      "id": 1,
+      "id": {$CONTACT_INSTANCE},
       "user": {$WAYNE_ACCOUNT_OF_THE_OWNER},
-      "required": false,
-      "creation_timestamp": "2021-01-04T14:26:30.866510Z",
+      "required": {$REQUIRED_ACCOUNT_FLAG},
+      "creation_timestamp": {$CREATION_TIMESTAMP},
       "platform": "{$EMAIL_PROVIDER}",
       "value": "{$EMAIL_ADDRESS}"
     }
@@ -131,10 +146,10 @@ response:
   "previous": null,
   "results": [
     {
-      "id": 1,
+      "id": {$CONTACT_INSTANCE},
       "user": {$WAYNE_ACCOUNT_OF_THE_OWNER},
-      "required": false,
-      "creation_timestamp": "2021-01-04T14:26:30.866510Z",
+      "required": {$REQUIRED_ACCOUNT_FLAG},
+      "creation_timestamp": {$CREATION_TIMESTAMP},
       "platform": "{$SOCIAL_PLATFORM}",
       "value": "{$USERNAME_IN_THE_GIVEN_SOCIAL_PLATFORM}"
     }
