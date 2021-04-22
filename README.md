@@ -77,6 +77,32 @@ response:
 }
 ```
 
+##### Get user basic info:
+```
+GET https://oudi.herokuapp.com/api/v1/public/get/ottavio
+```
+
+response:
+```
+{
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": {$WAYNE_ACCOUNT},
+      "email": {$MAIN_EMAIL_ADDRESS},
+      "username": {$WAYNE_USERNAME},
+      "is_active": {$ACCOUNT_ACTIVE_FLAG},
+      "first_name": {$FIRST_NAME},
+      "last_name": {$LAST_NAME},
+      "date_joined": {$REGISTRATION_TIMESTAMP}
+    }
+  ]
+}
+```
+
 
 ##### Get user detail:
 ```
