@@ -1,25 +1,8 @@
 # Wayne Django Rest
 
-Django Rest Framework API. **The project has stopped due to lack of time.**
+Wayne is a REST-API project. It aims to store contact information (social, email and telephone) for each user.
 
-## Feature Implemented:
-
-* User managment
-
-  * registration
-  * account activation
-  * password reset
-  * data update
-
-* Remote client config
-
-  * location
-  * language
-  * UI theme
-  
-* Permissions
-
-* Test
+## Endpoints
 
 ## Author
 
