@@ -20,7 +20,7 @@ response:
   "results": [
     {
       "id": 3,
-      "user": 25,
+      "user": {$WAYNE_ACCOUNT},
       "required": false,
       "creation_timestamp": "2021-01-04T13:32:38.423757Z",
       "platform": "GMAIL",
@@ -53,7 +53,7 @@ response:
   "results": [
     {
       "id": 1,
-      "user": 25,
+      "user": {$WAYNE_ACCOUNT},
       "required": false,
       "creation_timestamp": "2021-01-04T14:26:30.866510Z",
       "platform": "FACEBOOK",
@@ -77,7 +77,7 @@ response:
   "previous": null,
   "results": [
     {
-      "user": 25,
+      "user": {$WAYNE_ACCOUNT},
       "bio": "user bio",
       "location": "Cagliari",
       "cellular": null,
@@ -96,12 +96,50 @@ response:
 GET https://oudi.herokuapp.com/api/v1/public/reverse/email_based/${EMAIL_PROVIDER}/{$EMAIL_ADDRESS}
 ```
 
+response:
+```
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": {$WAYNE_ACCOUNT_OF_THE_OWNER},
+      "required": false,
+      "creation_timestamp": "2021-01-04T14:26:30.866510Z",
+      "platform": "{$EMAIL_PROVIDER}",
+      "value": "{$EMAIL_ADDRESS}"
+    }
+  ]
+}
+```
+
 important: EMAIL_PROVIDER must be a value of Email Provider Enumeration
 
 
 ##### Reverse lookup by username (like email lookup)
 ```
  GET https://oudi.herokuapp.com/api/v1/public/reverse/username_based/{$SOCIAL_PLATFORM}/{$USERNAME_IN_THE_GIVEN_SOCIAL_PLATFORM}
+```
+
+response:
+```
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": {$WAYNE_ACCOUNT_OF_THE_OWNER},
+      "required": false,
+      "creation_timestamp": "2021-01-04T14:26:30.866510Z",
+      "platform": "{$SOCIAL_PLATFORM}",
+      "value": "{$USERNAME_IN_THE_GIVEN_SOCIAL_PLATFORM}"
+    }
+  ]
+}
 ```
 
 important: SOCIAL_PLATFORM must be a value of Social Platform Enumeration
