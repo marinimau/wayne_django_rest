@@ -12,7 +12,7 @@ GET https://oudi.herokuapp.com/api/v1/public/get/{$USERNAME}/account/email_based
 ```
 
 response:
-```json
+```
 {
   "count": 2,
   "next": null,
@@ -33,7 +33,7 @@ response:
       "id": {$CONTACT_INSTANCE},
       "user": {$WAYNE_ACCOUNT},
       "required": {$REQUIRED_ACCOUNT_FLAG},
-      "creation_timestamp": "2021-01-04T14:58:24.457715Z",
+      "creation_timestamp": {$CREATION_TIMESTAMP},
       "platform": {$EMAIL_PROVIDER},
       "value": {$EMAIL_ADDRESS}
     }
