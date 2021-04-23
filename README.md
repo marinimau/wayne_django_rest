@@ -362,6 +362,75 @@ response:
 }
 ```
 
+#### Profile details
+
+##### Get your profile details
+```
+GET https://oudi.herokuapp.com/api/v1/user/personal_data/${YOUR_USER_ID}/
+
+HEADER:
+Content-type: multipart/form-data
+
+AUTH:
+
+Bearer: Token {$YOUR_AUTH_TOKEN}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "user": {$USER_ID},
+  "bio": {$BIO},
+  "location": {$LOCATION},
+  "cellular": {$CELLULAR},
+  "gender": {$GENDER},
+  "birth_date": {$BIRTH_DATE},
+  "url_img_profile": {$URL_IMG_PROFILE},
+  "email_confirmed": {$EMAIL_CONFIRMED_FLAG}
+}
+```
+
+
+##### Edit your profile details
+```
+PUT https://oudi.herokuapp.com/api/v1/user/personal_data/${YOUR_USER_ID}/
+
+HEADER:
+Content-type: multipart/form-data
+
+AUTH:
+
+Bearer: Token {$YOUR_AUTH_TOKEN}
+
+DATA:
+multipart : {
+  {$FIELD1}: {$VALUE1},
+  ...
+  {$FIELDk}: {$VALUEk},
+}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "user": {$USER_ID},
+  "bio": {$BIO},
+  "location": {$LOCATION},
+  "cellular": {$CELLULAR},
+  "gender": {$GENDER},
+  "birth_date": {$BIRTH_DATE},
+  "url_img_profile": {$URL_IMG_PROFILE},
+  "email_confirmed": {$EMAIL_CONFIRMED_FLAG}
+}
+```
+
+
 ## Author
 
 [Mauro Marini](https://github.com/marinimau)
