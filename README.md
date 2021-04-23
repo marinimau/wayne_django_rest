@@ -13,6 +13,8 @@ GET https://oudi.herokuapp.com/api/v1/public/get/{$USERNAME}/account/email_based
 
 response:
 ```
+200 OK
+
 {
   "count": 2,
   "next": null,
@@ -49,6 +51,8 @@ GET https://oudi.herokuapp.com/api/v1/public/get/{$USERNAME}/account/username_ba
 
 response:
 ```
+200 OK
+
 {
   "count": 1,
   "next": null,
@@ -84,7 +88,8 @@ GET https://oudi.herokuapp.com/api/v1/public/get/ottavio
 
 response:
 ```
-{
+200 OK
+
 {
   "count": 1,
   "next": null,
@@ -111,6 +116,8 @@ GET https://oudi.herokuapp.com/api/v1/public/get/{$USERNAME}/detail
 
 response:
 ```
+200 OK
+
 {
   "count": 1,
   "next": null,
@@ -139,6 +146,8 @@ GET https://oudi.herokuapp.com/api/v1/public/reverse/email_based/${EMAIL_PROVIDE
 
 response:
 ```
+200 OK
+
 {
   "count": 1,
   "next": null,
@@ -166,6 +175,8 @@ important: EMAIL_PROVIDER must be a value of Email Provider Enumeration
 
 response:
 ```
+200 OK
+
 {
   "count": 1,
   "next": null,
@@ -184,6 +195,31 @@ response:
 ```
 
 important: SOCIAL_PLATFORM must be a value of Social Platform Enumeration
+
+
+#### User
+
+##### User registraiton
+```
+POST https://oudi.herokuapp.com/api/v1/user/
+
+```
+
+response:
+```
+201 CREATED
+
+{
+  "id": {$USER_ID},
+  "email": {$EMAIL},
+  "username": {$USERNAME},
+  "is_active": false,
+  "first_name": "",
+  "last_name": "",
+  "date_joined": {$REGISTRATION_TIMESTAMP}
+}
+```
+
 
 
 ## Author
