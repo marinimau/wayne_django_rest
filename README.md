@@ -430,6 +430,66 @@ response:
 }
 ```
 
+#### Client configuration
+
+##### Get your client configuration
+```
+GET https://oudi.herokuapp.com/api/v1/config/${YOUR_USER_ID}/
+
+HEADER:
+Content-type: multipart/form-data
+
+AUTH:
+
+Bearer: Token {$YOUR_AUTH_TOKEN}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "user": {$USER_ID},
+  "country": {$COUNTRY_CODE},
+  "language": {$LANGUAGE_CODE},
+  "ui_pref": {$UI_APPAREANCE_CODE}
+}
+```
+
+
+##### EDIT your client configuration
+```
+PUT https://oudi.herokuapp.com/api/v1/config/${YOUR_USER_ID}/
+
+HEADER:
+Content-type: multipart/form-data
+
+AUTH:
+
+Bearer: Token {$YOUR_AUTH_TOKEN}
+
+DATA:
+multipart : {
+  {$FIELD1}: {$VALUE1},
+  ...
+  {$FIELDk}: {$VALUEk},
+}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "user": {$USER_ID},
+  "country": {$COUNTRY_CODE},
+  "language": {$LANGUAGE_CODE},
+  "ui_pref": {$UI_APPAREANCE_CODE}
+}
+```
+
 
 ## Author
 
