@@ -1,6 +1,7 @@
 # Wayne Django Rest
 
-Wayne is a REST-API project. It aims to store contact information (social, email and telephone) for each user.
+Wayne is a REST-API project. It aims to store contact information (social, email and telephone numbers) for each user.
+Using the reverse function, given an email or a social username you can find all the other contacts for that user.
 
 ## Endpoints
 
