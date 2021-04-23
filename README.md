@@ -278,8 +278,89 @@ response:
 }
 ```
 
-**check email for activate your account
 
+##### GET Auth Token
+```
+POST https://oudi.herokuapp.com/api/v1/token-auth/
+
+HEADER:
+Content-type: multipart/form-data
+
+BODY:
+multipart : {
+  "username": {$USERNAME},
+  "password": {$PASSWORD}
+}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "token": ${YOUR_AUTH_TOKEN}
+}
+```
+
+##### Generate reset password token
+```
+POST https://oudi.herokuapp.com/api/v1/password_recovery/
+
+HEADER:
+Content-type: multipart/form-data
+
+BODY:
+multipart : {
+  "email": {$EMAIL},
+}
+
+```
+
+response:
+```
+201 CREATED
+
+{
+  "user": {$USER_ID},
+  "email": {$EMAIL},
+  "ip": {$REQUEST_IP},
+  "user_agent": {$REQUEST_USER_AGENT},
+  "creation_timestamp": {$CREATION_TIMESTAMP} // token expires after 30 minutes
+}
+```
+
+**you can find the token only in your email
+
+
+
+##### Reset password using token
+```
+POST https://oudi.herokuapp.com/api/v1/password_recovery/confirm/
+
+HEADER:
+Content-type: multipart/form-data
+
+BODY:
+multipart : {
+  "token": {$RESET_PASSWORD_TOKEN},
+  "email": {$YOUR_EMAIL} // token works only for the email used for request it
+  "password": {$NEW_PASSWORD}
+  "password2": {$NEW_PASSWORD}
+  
+}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "token": {$TOKEN}, // this token has been destroyed
+  "email": {$EMAIL}
+}
+```
 
 ## Author
 
