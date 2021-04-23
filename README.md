@@ -231,6 +231,54 @@ response:
 }
 ```
 
+**check email for activate your account
+
+
+
+##### Activate account
+
+```
+GET https://oudi.herokuapp.com/api/v1/user/activate/${KEY}/${TOKEN}/
+```
+
+
+**you can find this one-time url in your email
+
+
+##### Alter user data
+```
+PUT https://oudi.herokuapp.com/api/v1/user/${YOUR_USER_ID}/
+
+HEADER:
+Content-type: multipart/form-data
+
+AUTH:
+
+Bearer: Token {$YOUR_AUTH_TOKEN}
+
+BODY:
+multipart : {
+  "first_name": {$YOUR_NAME} // you can change more fields
+}
+
+```
+
+response:
+```
+200 OK
+
+{
+  "id": {$USER_ID},
+  "email": {$EMAIL},
+  "username": {$USERNAME},
+  "is_active": false,
+  "first_name": {$YOUR_NAME},
+  "last_name": "",
+  "date_joined": {$REGISTRATION_TIMESTAMP}
+}
+```
+
+**check email for activate your account
 
 
 ## Author
