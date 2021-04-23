@@ -9,19 +9,6 @@ Wayne is a REST-API project. It aims to store contact information (social, email
 ##### Get public email accounts of a given user:
 ```
 GET https://oudi.herokuapp.com/api/v1/public/get/{$USERNAME}/account/email_based
-
-HEADER:
-Content-type: multipart/form-data
-
-BODY:
-
-multipart : {
-  "username": {$USERNAME},
-  "email": {$EMAIL},
-  "password": {$PASSWORD}
-  "password2": {$PASSWORD}
-}
-
 ```
 
 response:
@@ -215,6 +202,17 @@ important: SOCIAL_PLATFORM must be a value of Social Platform Enumeration
 ##### User registraiton
 ```
 POST https://oudi.herokuapp.com/api/v1/user/
+
+HEADER:
+Content-type: multipart/form-data
+
+BODY:
+multipart : {
+  "username": {$USERNAME},
+  "email": {$EMAIL},
+  "password": {$PASSWORD}
+  "password2": {$PASSWORD}
+}
 
 ```
 
